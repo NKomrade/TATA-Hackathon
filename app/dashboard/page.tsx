@@ -1,161 +1,149 @@
-'use client';
+"use client";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Battery, TrendingUp, Clock, AlertTriangle } from "lucide-react";
+import { useState, useEffect } from "react";
 
-import { useState } from 'react';
-import Header from '@/components/layout/Header';
-import MetricCard from '@/components/dashboard/MetricCard';
-import { Button } from '@/components/ui/button';
-import { 
-  Database, 
-  GitBranch, 
-  Clock, 
-  RefreshCw, 
-  Activity, 
-  MessageSquare,
-  Users,
-  TrendingUp
-} from 'lucide-react';
+export default function DashboardPage() {
+  const [kpiData, setKpiData] = useState({
+    capacity: 1.85,
+    soh: 92.5,
+    rul: 145,
+    temperature: 25.3
+  });
 
-const DashboardPage = () => {
-  const [isRebuilding, setIsRebuilding] = useState(false);
-
-  const handleRebuildGraph = () => {
-    setIsRebuilding(true);
-    setTimeout(() => setIsRebuilding(false), 5000);
-  };
-
-  const metrics = [
-    {
-      title: 'Total Entities',
-      value: '1,247',
-      icon: Database,
-      color: 'blue',
-      change: '+12%',
-      changeType: 'positive' as const
-    },
-    {
-      title: 'Relationships',
-      value: '3,891',
-      icon: GitBranch,
-      color: 'green',
-      change: '+8%',
-      changeType: 'positive' as const
-    },
-    {
-      title: 'Active Users',
-      value: '342',
-      icon: Users,
-      color: 'purple',
-      change: '+23%',
-      changeType: 'positive' as const
-    },
-    {
-      title: 'Queries Today',
-      value: '1,852',
-      icon: MessageSquare,
-      color: 'orange',
-      change: '+15%',
-      changeType: 'positive' as const
-    },
-    {
-      title: 'Response Time',
-      value: '0.8s',
-      icon: Activity,
-      color: 'red',
-      change: '-12%',
-      changeType: 'positive' as const
-    },
-    {
-      title: 'Success Rate',
-      value: '96.2%',
-      icon: TrendingUp,
-      color: 'emerald',
-      change: '+2%',
-      changeType: 'positive' as const
-    }
-  ];
+  const [capacityData, setCapacityData] = useState([
+    { cycle: 1, capacity: 2.0, predicted: 2.0 },
+    { cycle: 50, capacity: 1.95, predicted: 1.96 },
+    { cycle: 100, capacity: 1.88, predicted: 1.89 },
+    { cycle: 150, capacity: 1.82, predicted: 1.83 },
+    { cycle: 200, capacity: 1.75, predicted: 1.76 },
+  ]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Dashboard</h1>
-            <p className="text-slate-600 mt-1">
-              Monitor your knowledge graph and system performance
+    <div className="w-full space-y-6">
+      <div className="flex flex-col space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
+        <p className="text-muted-foreground">
+          Monitor your battery digital twin system and key performance metrics.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Batteries</CardTitle>
+            <Battery className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">1,234</div>
+            <p className="text-xs text-muted-foreground">
+              +12% from last month
             </p>
-          </div>
-          
-          <Button
-            onClick={handleRebuildGraph}
-            disabled={isRebuilding}
-            className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
-          >
-            <RefreshCw className={`w-4 h-4 ${isRebuilding ? 'animate-spin' : ''}`} />
-            {isRebuilding ? 'Rebuilding...' : 'Rebuild Graph'}
-          </Button>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {metrics.map((metric, index) => (
-            <MetricCard key={index} {...metric} />
-          ))}
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Predictions</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">89</div>
+            <p className="text-xs text-muted-foreground">
+              +5% from last week
+            </p>
+          </CardContent>
+        </Card>
 
-        {/* Last Update Info */}
-        <div className="bg-white rounded-lg shadow-lg border border-slate-200 p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Clock className="w-5 h-5 text-slate-600" />
-            <h2 className="text-xl font-semibold text-slate-800">System Status</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-slate-600">Last Graph Update:</span>
-                <span className="font-medium text-slate-800" suppressHydrationWarning>
-                  {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
-                </span>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg RUL</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">24.5</div>
+            <p className="text-xs text-muted-foreground">
+              months remaining
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Alerts</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">3</div>
+            <p className="text-xs text-muted-foreground">
+              require attention
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4">
+          <CardHeader>
+            <CardTitle>Battery Performance Overview</CardTitle>
+            <CardDescription>
+              Real-time monitoring of battery health and performance metrics.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pl-2">
+            <div className="h-[300px] flex items-center justify-center bg-muted rounded-lg">
+              <p className="text-muted-foreground">Performance Chart Placeholder</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-3">
+          <CardHeader>
+            <CardTitle>Recent Alerts</CardTitle>
+            <CardDescription>
+              Latest system alerts and notifications.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <Badge variant="destructive">Critical</Badge>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    Battery #1234 Low Voltage
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    2 minutes ago
+                  </p>
+                </div>
               </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-slate-600">System Status:</span>
-                <span className="inline-flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-green-600 font-medium">Operational</span>
-                </span>
+              <div className="flex items-center space-x-4">
+                <Badge variant="outline">Warning</Badge>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    High Temperature Detected
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    15 minutes ago
+                  </p>
+                </div>
               </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-slate-600">Graph Version:</span>
-                <span className="font-medium text-slate-800">v2.1.3</span>
+              <div className="flex items-center space-x-4">
+                <Badge variant="secondary">Info</Badge>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    Model Training Completed
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    1 hour ago
+                  </p>
+                </div>
               </div>
             </div>
-            
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-slate-600">Server Load:</span>
-                <span className="font-medium text-slate-800">23%</span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-slate-600">Memory Usage:</span>
-                <span className="font-medium text-slate-800">4.2GB / 16GB</span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-slate-600">Uptime:</span>
-                <span className="font-medium text-slate-800">99.9%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
-};
-
-export default DashboardPage;
+}

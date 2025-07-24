@@ -1,119 +1,79 @@
-'use client';
-
-import { useState } from 'react';
-import Header from '@/components/layout/Header';
-import ChatWindow from '@/components/chat/ChatWindow';
-import { Message } from '@/components/chat/ChatWindow';
-import MessageInput from '@/components/chat/MessageInput';
-import KnowledgeGraphView from '@/components/knowledge-graph/KnowlegdeGraphView';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Brain, MessageSquare } from 'lucide-react';
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Battery, TrendingUp, Recycle, BarChart3 } from "lucide-react";
+import Link from "next/link";
 
 export default function HomePage() {
-  const [selectedTopic, setSelectedTopic] = useState<string>('');
-  const [showKnowledgeGraph, setShowKnowledgeGraph] = useState<boolean>(false);
-  const [messages, setMessages] = useState<Message[]>([
+  const features = [
     {
-      id: 1,
-      text: "Hello! I'm your AI Help Bot. How can I assist you today?",
-      sender: 'bot',
-      timestamp: new Date()
+      icon: Battery,
+      title: "Battery Analytics",
+      description: "Comprehensive analysis of battery health and performance metrics"
+    },
+    {
+      icon: TrendingUp,
+      title: "Predictive Modeling",
+      description: "AI-powered predictions for capacity degradation and remaining useful life"
+    },
+    {
+      icon: Recycle,
+      title: "Reuse Recommendations",
+      description: "Smart recommendations for second-life applications and circular economy"
+    },
+    {
+      icon: BarChart3,
+      title: "Advanced Analytics",
+      description: "Deep insights with hybrid digital twin technology"
     }
-  ]);
-
-  const handleSendMessage = (text: string) => {
-    const newMessage = {
-      id: messages.length + 1,
-      text,
-      sender: 'user' as const,
-      timestamp: new Date()
-    };
-    
-    setMessages([...messages, newMessage]);
-    
-    // Simulate bot response
-    setTimeout(() => {
-      const botResponse = {
-        id: messages.length + 2,
-        text: "I understand your question. Let me search through our knowledge graph to find the most relevant information for you.",
-        sender: 'bot' as const,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, botResponse]);
-    }, 1000);
-  };
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main Chat Interface */}
-          <div className="flex-1 space-y-6">
-            {/* Hero Section */}
-            <div className="text-center space-y-4">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="p-3 bg-blue-100 rounded-full">
-                  <Brain className="w-8 h-8 text-blue-600" />
-                </div>
-                <h1 className="text-4xl font-bold text-slate-800">AI Help Bot</h1>
-              </div>
-              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                Get instant answers powered by our comprehensive knowledge graph. 
-                Ask questions about admissions, courses, events, and more.
-              </p>
-            </div>
-
-            {/* Query Topic Filter */}
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-lg shadow-sm border">
-              <div className="flex items-center gap-3">
-                <MessageSquare className="w-5 h-5 text-blue-600" />
-                <span className="font-medium text-slate-700">Select Query Topic:</span>
-              </div>
-              <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-                <SelectTrigger className="w-full sm:w-[200px]">
-                  <SelectValue placeholder="All Topics" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admissions">Admissions</SelectItem>
-                  <SelectItem value="courses">Courses</SelectItem>
-                  <SelectItem value="events">Events</SelectItem>
-                  <SelectItem value="facilities">Facilities</SelectItem>
-                  <SelectItem value="support">Support</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Chat Window */}
-            <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-              <ChatWindow messages={messages} />
-              <MessageInput onSendMessage={handleSendMessage} />
-            </div>
-          </div>
-
-          {/* Knowledge Graph Panel */}
-          <div className="lg:w-80">
-            <div className="sticky top-8 space-y-4">
-              <Button
-                onClick={() => setShowKnowledgeGraph(!showKnowledgeGraph)}
-                variant="outline"
-                className="w-full justify-start gap-2"
-              >
-                <Brain className="w-4 h-4" />
-                {showKnowledgeGraph ? 'Hide' : 'Show'} Knowledge Graph
-              </Button>
-              
-              {showKnowledgeGraph && (
-                <div className="bg-white rounded-lg shadow-lg border border-slate-200">
-                  <KnowledgeGraphView />
-                </div>
-              )}
-            </div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-16">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            Battery Digital Twin
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Advanced battery lifecycle management with AI-powered analytics, 
+            predictive modeling, and smart reuse recommendations for sustainable mobility.
+          </p>
+          <Link href="/dashboard">
+            <Button size="lg" className="text-lg px-8 py-4">
+              Launch Dashboard
+            </Button>
+          </Link>
         </div>
-      </main>
+
+        {/* Features */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {features.map((feature, index) => (
+            <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
+              <feature.icon className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+              <p className="text-gray-600 text-sm">{feature.description}</p>
+            </Card>
+          ))}
+        </div>
+
+        {/* Demo Section */}
+        <Card className="p-8 text-center">
+          <h2 className="text-3xl font-bold mb-4">Experience the Future of Battery Management</h2>
+          <p className="text-gray-600 mb-6">
+            Built for the Tata InnoVent 2025-26 hackathon - Digital twins for battery ageing and reuse modeling
+          </p>
+          <div className="flex justify-center gap-4">
+            <Link href="/dashboard">
+              <Button size="lg">Explore Dashboard</Button>
+            </Link>
+            <Link href="/dashboard/analytics">
+              <Button variant="outline" size="lg">View Analytics</Button>
+            </Link>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }

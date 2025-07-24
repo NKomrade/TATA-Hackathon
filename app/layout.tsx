@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'AI Help Bot - Knowledge Graph Assistant',
-  description: 'Get instant answers powered by our comprehensive knowledge graph',
+  title: 'Battery Digital Twin Dashboard',
+  description: 'Advanced battery analytics and lifecycle management',
 };
 
 export default function RootLayout({
