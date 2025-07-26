@@ -33,9 +33,9 @@ interface LoadingDotsProps {
 const LoadingDots = ({ className }: LoadingDotsProps) => {
   return (
     <div className={cn("flex space-x-1", className)}>
-      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:0.1s]"></div>
-      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '100ms' }}></div>
+      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
     </div>
   );
 };

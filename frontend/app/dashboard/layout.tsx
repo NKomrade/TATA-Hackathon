@@ -1,27 +1,86 @@
-import { AppSidebar } from "@/components/layout/app-sidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+"use client";
+import React, { useState } from "react";
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
+import { sidebarLinks } from "@/lib/sidebar-config";
+import { Battery } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
-          <SidebarTrigger className="-ml-1" />
-          <div className="ml-auto">
-            {/* Add any header content here */}
+    <div className="flex min-h-screen w-full bg-gray-50">
+      <Sidebar open={open} setOpen={setOpen}>
+        <SidebarBody className="justify-between gap-10 overflow-hidden">
+          <div className="flex flex-1 flex-col overflow-hidden">
+            {open ? <Logo /> : <LogoIcon />}
+            <div className="mt-8 flex flex-col gap-2 overflow-hidden">
+              {sidebarLinks.map((link, idx) => {
+                const isActive =
+                  pathname === link.href ||
+                  (link.href !== "/dashboard" && pathname.startsWith(link.href));
+
+                return (
+                  <SidebarLink
+                    key={idx}
+                    link={link}
+                    className={cn(
+                      "transition-colors duration-200",
+                      isActive
+                        ? "bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100"
+                        : "hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                    )}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex-1 rounded-xl bg-muted/50 p-4">
-            {children}
+        </SidebarBody>
+      </Sidebar>
+
+      <div className="flex-1 flex flex-col min-w-0 ml-[70px]">
+        <div className="flex-1 overflow-auto bg-white dark:bg-neutral-900">
+          <div className="p-6">
+            <div className="max-w-7xl mx-auto">{children}</div>
           </div>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+    </div>
   );
 }
+
+export const Logo = () => {
+  return (
+    <a
+      href="/dashboard"
+      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
+    >
+      <Battery className="h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400" />
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="font-medium whitespace-pre text-black dark:text-white"
+      >
+        TATA Battery AI
+      </motion.span>
+    </a>
+  );
+};
+
+export const LogoIcon = () => {
+  return (
+    <a
+      href="/dashboard"
+      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
+    >
+      <Battery className="h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400" />
+    </a>
+  );
+};

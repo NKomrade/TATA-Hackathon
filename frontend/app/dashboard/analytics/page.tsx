@@ -35,7 +35,7 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6 min-h-full">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Battery Analytics</h1>
         <p className="text-gray-600">Detailed analysis of battery performance and degradation patterns</p>

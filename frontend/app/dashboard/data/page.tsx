@@ -24,7 +24,7 @@ export default function DataPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6 min-h-full">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Data Management</h1>
         <p className="text-gray-600">Upload, view, and manage battery datasets for analysis</p>

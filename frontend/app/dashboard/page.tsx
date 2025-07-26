@@ -21,7 +21,7 @@ export default function DashboardPage() {
   ]);
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 min-h-full">
       <div className="flex flex-col space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
         <p className="text-muted-foreground">
@@ -139,6 +139,72 @@ export default function DashboardPage() {
                     1 hour ago
                   </p>
                 </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Add some extra content to demonstrate scrolling */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>System Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>API Health</span>
+                <Badge variant="default">Online</Badge>
+              </div>
+              <div className="flex justify-between">
+                <span>Database</span>
+                <Badge variant="default">Connected</Badge>
+              </div>
+              <div className="flex justify-between">
+                <span>ML Models</span>
+                <Badge variant="default">Running</Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <button className="w-full text-left p-2 hover:bg-gray-50 rounded">
+                Upload New Data
+              </button>
+              <button className="w-full text-left p-2 hover:bg-gray-50 rounded">
+                Run Prediction
+              </button>
+              <button className="w-full text-left p-2 hover:bg-gray-50 rounded">
+                Generate Report
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="text-sm">
+                <p className="font-medium">Data uploaded</p>
+                <p className="text-gray-500">2 hours ago</p>
+              </div>
+              <div className="text-sm">
+                <p className="font-medium">Model trained</p>
+                <p className="text-gray-500">4 hours ago</p>
+              </div>
+              <div className="text-sm">
+                <p className="font-medium">Report generated</p>
+                <p className="text-gray-500">1 day ago</p>
               </div>
             </div>
           </CardContent>

@@ -117,6 +117,10 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -141,9 +145,36 @@
   background: #94a3b8;
 }
 
-/* Smooth animations */
-* {
-  transition: all 0.2s ease-in-out;
+/* Improved scrollbar for main content */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark mode scrollbar */
+.dark *::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 /* Enhanced animations */
@@ -190,37 +221,13 @@
   animation: gradient-shift 3s ease infinite;
 }
 
-/* Animation delay utilities */
-.\[animation-delay\:0\.1s\] {
+/* Specific animation delays for bouncing dots */
+.animate-bounce[style*="animation-delay:0.1s"] {
   animation-delay: 0.1s;
 }
 
-.\[animation-delay\:0\.2s\] {
+.animate-bounce[style*="animation-delay:0.2s"] {
   animation-delay: 0.2s;
-}
-
-.\[animation-delay\:50ms\] {
-  animation-delay: 50ms;
-}
-
-.\[animation-delay\:100ms\] {
-  animation-delay: 100ms;
-}
-
-.\[animation-delay\:150ms\] {
-  animation-delay: 150ms;
-}
-
-.\[animation-delay\:200ms\] {
-  animation-delay: 200ms;
-}
-
-.\[animation-delay\:250ms\] {
-  animation-delay: 250ms;
-}
-
-.\[animation-delay\:300ms\] {
-  animation-delay: 300ms;
 }
 
 /* Dynamic animation delays for message animations */
@@ -246,8 +253,37 @@
 .modern-button {
   position: relative;
   overflow: hidden;
+  transition: all 0.2s ease-in-out;
 }
 
+.modern-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.modern-button:hover::before {
+  left: 100%;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
 .modern-button::before {
   content: '';
   position: absolute;
