@@ -76,10 +76,10 @@ export default function SettingsPage() {
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <h2 className="text-xl font-semibold mb-4">Data Management</h2>
           <div className="space-y-4">
-            <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+            <button className="w-full bg-white text-black py-2 px-4 cursor-pointer rounded-lg transition-colors border-2 border-black">
               Export All Data
             </button>
-            <button className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors">
+            <button className="w-full text-white py-2 px-4 rounded-lg bg-black cursor-pointer transition-colors">
               Clear Cache
             </button>
           </div>
