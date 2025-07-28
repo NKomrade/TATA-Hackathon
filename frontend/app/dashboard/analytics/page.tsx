@@ -35,13 +35,12 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="w-full space-y-6 min-h-full">
+    <div className="w-full space-y-4 min-h-full">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Battery Analytics</h1>
-        <p className="text-gray-600">Detailed analysis of battery performance and degradation patterns</p>
+        {/* <h1 className="text-3xl font-bold text-gray-900">Battery Analytics</h1> */}
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <CapacityChart data={capacityData} />
         <TemperatureTrends data={temperatureData} />
         <VoltageAnalysis data={voltageData} />

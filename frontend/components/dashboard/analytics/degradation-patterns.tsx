@@ -16,7 +16,7 @@ export function DegradationPatterns({ data }: DegradationPatternsProps) {
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Degradation Rate Patterns</h3>
-      <div className="h-80">
+      <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
