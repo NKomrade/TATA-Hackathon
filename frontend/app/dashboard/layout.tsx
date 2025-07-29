@@ -4,8 +4,8 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { sidebarLinks } from "@/lib/sidebar-config";
-import { Battery } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function DashboardLayout({
   children,
@@ -62,7 +62,13 @@ export const Logo = () => {
       href="/dashboard"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
-      <Battery className="h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400" />
+      <Image
+        src="/rotatedbattery.svg"
+        alt="Battery Logo"
+        width={48}
+        height={48}
+        className="shrink-0"
+      />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -80,7 +86,13 @@ export const LogoIcon = () => {
       href="/dashboard"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
-      <Battery className="h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400" />
+      <Image
+        src="/rotatedbattery.svg"
+        alt="Battery Logo"
+        width={44}
+        height={44}
+        className="shrink-0"
+      />
     </a>
   );
 };
