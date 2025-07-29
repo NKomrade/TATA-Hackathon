@@ -16,13 +16,13 @@ interface CapacityChartProps {
 export function CapacityChart({ data }: CapacityChartProps) {
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">Capacity Analysis - Model Comparison</h3>
+      <h3 className="text-lg font-semibold mb-4">Cycle vs RUL Analysis - Model Comparison</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="cycle" />
-            <YAxis />
+            <YAxis label={{ value: 'Remaining Useful Life (cycles)', angle: -90, position: 'insideLeft' }} />
             <Tooltip />
             <Legend />
             <Line 
@@ -30,7 +30,7 @@ export function CapacityChart({ data }: CapacityChartProps) {
               dataKey="actual" 
               stroke="#2563eb" 
               strokeWidth={2}
-              name="Experimental Data"
+              name="Experimental RUL"
             />
             <Line 
               type="monotone" 
@@ -38,14 +38,14 @@ export function CapacityChart({ data }: CapacityChartProps) {
               stroke="#059669" 
               strokeWidth={2}
               strokeDasharray="5 5"
-              name="Physics Model"
+              name="Physics Model RUL"
             />
             <Line 
               type="monotone" 
               dataKey="hybridTwin" 
               stroke="#dc2626" 
               strokeWidth={2}
-              name="Hybrid Digital Twin"
+              name="Hybrid Digital Twin RUL"
             />
           </LineChart>
         </ResponsiveContainer>

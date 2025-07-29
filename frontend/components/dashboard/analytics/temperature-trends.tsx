@@ -15,13 +15,13 @@ interface TemperatureTrendsProps {
 export function TemperatureTrends({ data }: TemperatureTrendsProps) {
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">Temperature Trends</h3>
+      <h3 className="text-lg font-semibold mb-4">Cycle vs Min Voltage Charge</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="cycle" />
-            <YAxis />
+            <YAxis label={{ value: 'Min Voltage (V)', angle: -90, position: 'insideLeft' }} />
             <Tooltip />
             <Area 
               type="monotone" 
@@ -29,7 +29,7 @@ export function TemperatureTrends({ data }: TemperatureTrendsProps) {
               stackId="1"
               stroke="#f59e0b" 
               fill="#fbbf24"
-              name="Battery Temperature"
+              name="Min Voltage (Measured)"
             />
             <Area 
               type="monotone" 
@@ -37,7 +37,7 @@ export function TemperatureTrends({ data }: TemperatureTrendsProps) {
               stackId="2"
               stroke="#6b7280" 
               fill="#9ca3af"
-              name="Ambient Temperature"
+              name="Min Voltage (Predicted)"
             />
           </AreaChart>
         </ResponsiveContainer>
