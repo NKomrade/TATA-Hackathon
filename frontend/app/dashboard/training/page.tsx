@@ -12,10 +12,10 @@ export default function TrainingPage() {
   ];
 
   const models = [
-    { name: "Neural Network", mae: 0.004, rmse: 0.008, r2: 0.96, trainingTime: 120, status: "trained" as const },
+    { name: "LSTM", mae: 0.004, rmse: 0.008, r2: 0.96, trainingTime: 120, status: "trained" as const },
     { name: "XGBoost", mae: 0.006, rmse: 0.01, r2: 0.94, trainingTime: 45, status: "trained" as const },
-    { name: "Random Forest", mae: 0.008, rmse: 0.012, r2: 0.92, trainingTime: 30, status: "trained" as const },
-    { name: "Hybrid Model", mae: 0.003, rmse: 0.006, r2: 0.98, trainingTime: 180, status: "training" as const },
+    { name: "Simulated annealing", mae: 0.008, rmse: 0.012, r2: 0.92, trainingTime: 30, status: "trained" as const },
+    { name: "AdaBoost", mae: 0.003, rmse: 0.006, r2: 0.98, trainingTime: 180, status: "training" as const },
   ];
 
   return (

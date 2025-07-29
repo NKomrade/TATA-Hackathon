@@ -27,12 +27,12 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="w-full space-y-6 min-h-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="w-full space-y-2 min-h-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {graphs.map((graph, index) => (
-          <Card key={index} className="p-6">
+          <Card key={index} className="p-4">
             <div className="space-y-4">
-              <div className="relative w-full h-96 bg-gray-50 rounded-lg overflow-hidden">
+              <div className="relative w-full h-79 bg-gray-50 rounded-lg overflow-hidden">
                 <Image
                   src={graph.src}
                   alt={graph.title}
@@ -42,8 +42,8 @@ export default function AnalyticsPage() {
                 />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">{graph.title}</h3>
-                <p className="text-sm text-gray-600">{graph.description}</p>
+                {/* <h3 className="font-semibold text-gray-900">{graph.title}</h3>
+                <p className="text-sm text-gray-600">{graph.description}</p> */}
               </div>
             </div>
           </Card>

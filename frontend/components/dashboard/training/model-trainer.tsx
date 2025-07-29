@@ -35,10 +35,10 @@ export function ModelTrainer() {
               <SelectValue placeholder="Select model type..." />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="neural_network">Neural Network</SelectItem>
+              <SelectItem value="lstm">LSTM</SelectItem>
               <SelectItem value="xgboost">XGBoost</SelectItem>
-              <SelectItem value="random_forest">Random Forest</SelectItem>
-              <SelectItem value="hybrid">Hybrid Model</SelectItem>
+              <SelectItem value="simulated_annealing">Simulated Annealing</SelectItem>
+              <SelectItem value="ada_boost">AdaBoost</SelectItem>
             </SelectContent>
           </Select>
         </div>
