@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,26 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen w-full bg-gray-50">
+        <div className="flex-1 flex flex-col min-w-0 ml-[70px]">
+          <div className="flex-1 overflow-auto bg-white dark:bg-neutral-900">
+            <div className="p-6">
+              <div className="max-w-7xl mx-auto">{children}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen w-full bg-gray-50">

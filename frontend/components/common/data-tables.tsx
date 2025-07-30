@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
@@ -20,6 +20,11 @@ export function DataTable({ data, columns, pageSize = 10 }: DataTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Filter data based on search term
   const filteredData = data.filter(item =>
@@ -50,6 +55,49 @@ export function DataTable({ data, columns, pageSize = 10 }: DataTableProps) {
       direction: current?.key === key && current.direction === 'asc' ? 'desc' : 'asc'
     }));
   };
+
+  if (!mounted) {
+    return (
+      <div className="space-y-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 pointer-events-none z-10" />
+          <Input
+            placeholder="Search..."
+            value=""
+            className="pl-10 relative z-0"
+            disabled
+          />
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b">
+                {columns.map((column) => (
+                  <th
+                    key={column.key}
+                    className="text-left p-3"
+                  >
+                    {column.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data.slice(0, pageSize).map((item, index) => (
+                <tr key={index} className="border-b hover:bg-gray-50">
+                  {columns.map((column) => (
+                    <td key={column.key} className="p-3">
+                      {item[column.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

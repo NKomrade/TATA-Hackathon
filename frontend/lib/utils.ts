@@ -15,7 +15,11 @@ export function formatDate(date: Date): string {
   }).format(date);
 }
 
-export function formatTimeAgo(date: Date): string {
+export function formatTimeAgo(date: Date, isClient: boolean = false): string {
+  if (!isClient) {
+    return formatDate(date); // Fallback to static date during SSR
+  }
+  
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
   
@@ -39,7 +43,7 @@ export function truncateText(text: string, maxLength: number): string {
 }
 
 export function generateId(): string {
-  return Math.random().toString(36).substr(2, 9);
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
 }
 
 export function debounce<T extends (...args: any[]) => any>(

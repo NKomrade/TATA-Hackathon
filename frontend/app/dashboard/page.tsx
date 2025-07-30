@@ -36,7 +36,7 @@ export default function DashboardPage() {
             <Battery className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,234</div>
+            <div className="text-2xl font-bold" suppressHydrationWarning>1,234</div>
             <p className="text-xs text-muted-foreground">
               +12% from last month
             </p>
@@ -49,7 +49,7 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">89</div>
+            <div className="text-2xl font-bold" suppressHydrationWarning>89</div>
             <p className="text-xs text-muted-foreground">
               +5% from last week
             </p>
@@ -62,7 +62,7 @@ export default function DashboardPage() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">79</div>
+            <div className="text-2xl font-bold" suppressHydrationWarning>79</div>
             <p className="text-xs text-muted-foreground">
               months remaining
             </p>

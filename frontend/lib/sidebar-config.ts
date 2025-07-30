@@ -34,11 +34,6 @@ export const sidebarLinks: SidebarLink[] = [
     icon: React.createElement(TrendingUp, { className: "h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" }),
   },
   {
-    label: "RUL Modeling",
-    href: "/dashboard/rul",
-    icon: React.createElement(Clock, { className: "h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" }),
-  },
-  {
     label: "Reuse Recommendations",
     href: "/dashboard/reuse",
     icon: React.createElement(Recycle, { className: "h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" }),
