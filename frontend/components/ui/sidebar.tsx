@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { Battery, TrendingUp, Recycle, Database } from "lucide-react";
 
 const sidebarOptions = [
@@ -12,24 +13,35 @@ const sidebarOptions = [
     label: "Predictions",
     href: "/dashboard/predictions",
     icon: <TrendingUp className="h-6 w-6" />,
-    activeColor: "linear-gradient(135deg, #3b82f6, #06b6d4)",
+    activeColor: "linear-gradient(135deg, #10a37f, #0ea46f)",
   },
   {
-    label: "Reuse Recommendations",
-    href: "/dashboard/reuse",
+    label: "Reports",
+    href: "/dashboard/reports",
     icon: <Recycle className="h-6 w-6" />,
-    activeColor: "linear-gradient(135deg, #f59e42, #fbbf24)",
+    activeColor: "linear-gradient(135deg, #10a37f, #0ea46f)",
   },
   {
-    label: "Data Management",
-    href: "/dashboard/data",
+    label: "Settings",
+    href: "/dashboard/settings",
     icon: <Database className="h-6 w-6" />,
-    activeColor: "linear-gradient(135deg, #6366f1, #818cf8)",
+    activeColor: "linear-gradient(135deg, #10a37f, #0ea46f)",
   },
 ];
 
 // Enhanced floating sidebar matching the battery dashboard theme
 const sidebar: React.FC = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Update active index based on current pathname
+  useEffect(() => {
+    const currentIndex = sidebarOptions.findIndex(option => option.href === pathname);
+    if (currentIndex !== -1) {
+      setActiveIndex(currentIndex);
+    }
+  }, [pathname]);
   return (
     <div
       style={{
@@ -57,13 +69,18 @@ const sidebar: React.FC = () => {
           key={opt.label}
           href={opt.href}
           title={opt.label}
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveIndex(i);
+            router.push(opt.href);
+          }}
           style={{
             textDecoration: "none",
             width: "40px",
             height: "40px",
             borderRadius: "50%",
-            background: i === 0 ? opt.activeColor : "rgba(51, 65, 85, 0.6)",
-            border: i === 0 ? "2px solid rgba(16, 163, 127, 0.8)" : "1px solid rgba(71, 85, 105, 0.3)",
+            background: i === activeIndex ? opt.activeColor : "rgba(51, 65, 85, 0.6)",
+            border: i === activeIndex ? "2px solid rgba(16, 163, 127, 0.8)" : "1px solid rgba(71, 85, 105, 0.3)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -76,6 +93,8 @@ const sidebar: React.FC = () => {
             transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
             position: "relative",
             overflow: "hidden",
+            transform: i === activeIndex ? "scale(1.1)" : "scale(1)",
+            boxShadow: i === activeIndex ? "0 4px 20px rgba(16, 163, 127, 0.4)" : "none",
           }}
         >
           {opt.icon}
