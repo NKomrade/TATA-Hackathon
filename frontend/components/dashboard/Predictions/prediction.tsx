@@ -142,7 +142,7 @@ const Predictions: React.FC = () => {
           <div className="p-3 bg-gradient-to-r from-[#10a37f] to-[#0ea46f] rounded-xl">
             <Activity className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-white">Model Training Dashboard</h2>
+          <h2 className="text-2xl font-bold text-white">Predictions Dashboard</h2>
         </div>
         <p className="text-slate-400">Train and compare battery prediction models</p>
       </div>

@@ -8,7 +8,7 @@ const models = [
   { id: "bi_lstm", label: "CP Bi LSTM", color: "from-[#10a37f] to-[#0ea46f]" },
   { id: "transform", label: "CP Transform", color: "from-blue-500 to-blue-600" },
   { id: "mlp", label: "CPMLP", color: "from-orange-500 to-orange-600" },
-  { id: "bogru", label: "CPBoGRU", color: "from-purple-500 to-purple-600" }
+  { id: "bogru", label: "CPBiGRU", color: "from-purple-500 to-purple-600" }
 ];
 
 const modelPredictions: Record<string, { 
