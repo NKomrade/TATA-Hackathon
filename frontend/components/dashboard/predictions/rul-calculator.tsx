@@ -52,7 +52,7 @@ export function RulCalculator() {
         {calculatedRul !== null && (
           <div className="p-4 bg-blue-50 rounded-lg">
             <p className="text-sm text-gray-600">Estimated Remaining Useful Life</p>
-            <p className="text-2xl font-semibold text-blue-600">
+            <p className="text-2xl font-semibold text-blue-600" suppressHydrationWarning>
               {calculatedRul} cycles
             </p>
           </div>
