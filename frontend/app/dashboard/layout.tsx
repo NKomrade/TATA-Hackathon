@@ -1,20 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
-import { sidebarLinks } from "@/lib/sidebar-config";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
+import Sidebar from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
@@ -22,9 +18,13 @@ export default function DashboardLayout({
 
   if (!mounted) {
     return (
-      <div className="flex min-h-screen w-full bg-gray-50">
-        <div className="flex-1 flex flex-col min-w-0 ml-[70px]">
-          <div className="flex-1 overflow-auto bg-white dark:bg-neutral-900">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJtIDYwIDAgTCAwIDYwIE0gMCAyMCBMIDIwIDAgTSA0MCA2MCBMIDY0IDQwIiBzdHJva2U9IiMxZTI5M2IiIHN0cm9rZS13aWR0aD0iMC41IiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-20"></div>
+        
+        <Sidebar />
+        <div className="flex-1 flex flex-col min-w-0 pl-[90px]">
+          <div className="flex-1 overflow-auto">
             <div className="p-6">
               <div className="max-w-7xl mx-auto">{children}</div>
             </div>
@@ -35,37 +35,13 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-gray-50">
-      <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10 overflow-hidden">
-          <div className="flex flex-1 flex-col overflow-hidden">
-            {open ? <Logo /> : <LogoIcon />}
-            <div className="mt-8 flex flex-col gap-2 overflow-hidden">
-              {sidebarLinks.map((link, idx) => {
-                const isActive =
-                  pathname === link.href ||
-                  (link.href !== "/dashboard" && pathname.startsWith(link.href));
-
-                return (
-                  <SidebarLink
-                    key={idx}
-                    link={link}
-                    className={cn(
-                      "transition-colors duration-200",
-                      isActive
-                        ? "bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100"
-                        : "hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                    )}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </SidebarBody>
-      </Sidebar>
-
-      <div className="flex-1 flex flex-col min-w-0 ml-[70px]">
-        <div className="flex-1 overflow-auto bg-white dark:bg-neutral-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJtIDYwIDAgTCAwIDYwIE0gMCAyMCBMIDIwIDAgTSA0MCA2MCBMIDY0IDQwIiBzdHJva2U9IiMxZTI5M2IiIHN0cm9rZS13aWR0aD0iMC41IiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-20"></div>
+      
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-w-0 pl-[90px]">
+        <div className="flex-1 overflow-auto">
           <div className="p-6">
             <div className="max-w-7xl mx-auto">{children}</div>
           </div>
@@ -77,9 +53,9 @@ export default function DashboardLayout({
 
 export const Logo = () => {
   return (
-    <a
+    <Link
       href="/dashboard"
-      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
+      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal"
     >
       <Image
         src="/rotatedbattery.svg"
@@ -91,19 +67,19 @@ export const Logo = () => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-medium whitespace-pre text-black dark:text-white"
+        className="font-medium whitespace-pre text-white bg-gradient-to-r from-white to-slate-300 bg-clip-text"
       >
         TATA Battery AI
       </motion.span>
-    </a>
+    </Link>
   );
 };
 
 export const LogoIcon = () => {
   return (
-    <a
+    <Link
       href="/dashboard"
-      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
+      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal"
     >
       <Image
         src="/rotatedbattery.svg"
@@ -112,6 +88,6 @@ export const LogoIcon = () => {
         height={44}
         className="shrink-0"
       />
-    </a>
+    </Link>
   );
 };

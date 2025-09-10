@@ -1,202 +1,100 @@
-"use client";
-import { cn } from "@/lib/utils";
-import React, { useState, createContext, useContext } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import React from "react";
+import { Battery, TrendingUp, Recycle, Database } from "lucide-react";
 
-interface Links {
-  label: string;
-  href: string;
-  icon: React.JSX.Element | React.ReactNode;
-}
+const sidebarOptions = [
+  {
+    label: "Battery Analytics",
+    href: "/dashboard/analytics",
+    icon: <Battery className="h-6 w-6" />,
+    activeColor: "linear-gradient(135deg, #10a37f, #0ea46f)",
+  },
+  {
+    label: "Predictions",
+    href: "/dashboard/predictions",
+    icon: <TrendingUp className="h-6 w-6" />,
+    activeColor: "linear-gradient(135deg, #3b82f6, #06b6d4)",
+  },
+  {
+    label: "Reuse Recommendations",
+    href: "/dashboard/reuse",
+    icon: <Recycle className="h-6 w-6" />,
+    activeColor: "linear-gradient(135deg, #f59e42, #fbbf24)",
+  },
+  {
+    label: "Data Management",
+    href: "/dashboard/data",
+    icon: <Database className="h-6 w-6" />,
+    activeColor: "linear-gradient(135deg, #6366f1, #818cf8)",
+  },
+];
 
-interface SidebarContextProps {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  animate: boolean;
-}
-
-const SidebarContext = createContext<SidebarContextProps | undefined>(
-  undefined
-);
-
-export const useSidebar = () => {
-  const context = useContext(SidebarContext);
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider");
-  }
-  return context;
-};
-
-export const SidebarProvider = ({
-  children,
-  open: openProp,
-  setOpen: setOpenProp,
-  animate = true,
-}: {
-  children: React.ReactNode;
-  open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  animate?: boolean;
-}) => {
-  const [openState, setOpenState] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const open = openProp !== undefined ? openProp : openState;
-  const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
-
-  if (!mounted) {
-    return (
-      <SidebarContext.Provider value={{ open: false, setOpen: () => {}, animate: false }}>
-        {children}
-      </SidebarContext.Provider>
-    );
-  }
-
+// Enhanced floating sidebar matching the battery dashboard theme
+const sidebar: React.FC = () => {
   return (
-    <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
-      {children}
-    </SidebarContext.Provider>
-  );
-};
-
-export const Sidebar = ({
-  children,
-  open,
-  setOpen,
-  animate,
-}: {
-  children: React.ReactNode;
-  open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  animate?: boolean;
-}) => {
-  return (
-    <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
-      {children}
-    </SidebarProvider>
-  );
-};
-
-export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
-  return (
-    <>
-      <DesktopSidebar {...props} />
-      <MobileSidebar {...(props as React.ComponentProps<"div">)} />
-    </>
-  );
-};
-
-export const DesktopSidebar = ({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof motion.div>) => {
-  const { open, setOpen, animate } = useSidebar();
-  return (
-    <>
-      <motion.div
-        className={cn(
-          "h-screen px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[350px] shrink-0 fixed left-0 top-0 z-30 overflow-hidden",
-          className
-        )}
-        animate={{
-          width: animate ? (open ? "275px" : "70px") : "275px",
-        }}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        {...props}
-      >
-        {children}
-      </motion.div>
-    </>
-  );
-};
-
-export const MobileSidebar = ({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"div">) => {
-  const { open, setOpen } = useSidebar();
-  return (
-    <>
-      <div
-        className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
-        )}
-        {...props}
-      >
-        <div className="flex justify-end z-20 w-full">
-          <IconMenu2
-            className="text-neutral-800 dark:text-neutral-200"
-            onClick={() => setOpen(!open)}
-          />
-        </div>
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
-              transition={{
-                duration: 0.3,
-                ease: "easeInOut",
-              }}
-              className={cn(
-                "fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[40] flex flex-col justify-between",
-                className
-              )}
-            >
-              <div
-                className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200"
-                onClick={() => setOpen(!open)}
-              >
-                <IconX />
-              </div>
-              {children}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </>
-  );
-};
-
-export const SidebarLink = ({
-  link,
-  className,
-  ...props
-}: {
-  link: Links;
-  className?: string;
-}) => {
-  const { open, animate } = useSidebar();
-  return (
-    <a
-      href={link.href}
-      className={cn(
-        "flex items-center justify-start gap-2 group/sidebar py-2 px-2 rounded-md",
-        className
-      )}
-      {...props}
+    <div
+      style={{
+        position: "fixed",
+        top: "50%",
+        left: "20px",
+        transform: "translateY(-50%)", // Centers vertically
+        width: "64px",
+        height: "280px",
+        background: "rgba(30, 41, 59, 0.5)", // slate-800/50 equivalent
+        backdropFilter: "blur(12px)", // Glass effect
+        borderRadius: "20px",
+        border: "1px solid rgba(71, 85, 105, 0.5)", // slate-600/50 equivalent
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-around",
+        zIndex: 1000,
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15)",
+        padding: "16px 0",
+      }}
     >
-      {link.icon}
-
-      <motion.span
-        animate={{
-          display: animate ? (open ? "inline-block" : "none") : "inline-block",
-          opacity: animate ? (open ? 1 : 0) : 1,
+      {sidebarOptions.map((opt, i) => (
+        <a
+          key={opt.label}
+          href={opt.href}
+          title={opt.label}
+          style={{
+            textDecoration: "none",
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            background: i === 0 ? opt.activeColor : "rgba(51, 65, 85, 0.6)",
+            border: i === 0 ? "2px solid rgba(16, 163, 127, 0.8)" : "1px solid rgba(71, 85, 105, 0.3)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            fontWeight: "600",
+            fontSize: "16px",
+            cursor: "pointer",
+            outline: "none",
+            margin: "8px 0",
+            transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {opt.icon}
+        </a>
+      ))}
+      
+      {/* Background pattern overlay matching dashboard */}
+      <div 
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: "inherit",
+          background: `url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJtIDYwIDAgTCAwIDYwIE0gMCAyMCBMIDIwIDAgTSA0MCA2MCBMIDY0IDQwIiBzdHJva2U9IiMxZTI5M2IiIHN0cm9rZS13aWR0aD0iMC41IiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')`,
+          opacity: 0.1,
+          pointerEvents: "none",
         }}
-        className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
-        suppressHydrationWarning
-      >
-        {link.label}
-      </motion.span>
-    </a>
+      />
+    </div>
   );
 };
+
+export default sidebar;

@@ -3,7 +3,6 @@ import {
   LayoutDashboard, 
   Battery, 
   TrendingUp, 
-  Clock, 
   Recycle, 
   Database, 
   Brain, 
@@ -42,21 +41,6 @@ export const sidebarLinks: SidebarLink[] = [
     label: "Data Management",
     href: "/dashboard/data",
     icon: React.createElement(Database, { className: "h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" }),
-  },
-  {
-    label: "Model Training",
-    href: "/dashboard/training",
-    icon: React.createElement(Brain, { className: "h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" }),
-  },
-  {
-    label: "Reports",
-    href: "/dashboard/reports",
-    icon: React.createElement(FileText, { className: "h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" }),
-  },
-  {
-    label: "Settings",
-    href: "/dashboard/settings",
-    icon: React.createElement(Settings, { className: "h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" }),
   },
 ];
 
