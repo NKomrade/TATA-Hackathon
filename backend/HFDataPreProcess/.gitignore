@@ -1,0 +1,26 @@
+# Ignore all CSV and PKL files
+*.csv
+*.pkl
+*.json
+
+# Ignore contents of data directories but keep the directories themselves
+CALB/*
+!CALB/.gitkeep
+
+test_data/*
+!test_data/.gitkeep
+
+battery_data_export/*
+!battery_data_export/.gitkeep
+battery_data_export/csv/*
+!battery_data_export/csv/.gitkeep
+battery_data_export/plots/*
+!battery_data_export/plots/.gitkeep
+
+# Common Python files to ignore
+__pycache__/
+
+# Virtual Environment
+venv/
+ENV/
+
