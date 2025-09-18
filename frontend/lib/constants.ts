@@ -136,4 +136,21 @@ export const STORAGE_KEYS = {
   SELECTED_BATTERY: "selected_battery",
   DASHBOARD_LAYOUT: "dashboard_layout",
   THEME: "theme",
+  BATTERY_ANALYTICS: 'batteryAnalytics',
+  BATTERY_ANALYTICS_TIMESTAMP: 'batteryAnalyticsTimestamp'
 } as const;
+
+// Flask API Configuration - Localhost only
+export const FLASK_API_BASE = process.env.NEXT_PUBLIC_FLASK_API_URL || "http://localhost:5000";
+
+export const FLASK_API_ENDPOINTS = {
+  ROOT: "/",
+  UPLOAD: "/api/upload"
+};
+
+// API Configuration
+export const API_CONFIG = {
+  TIMEOUT: 30000, // 30 seconds
+  MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
+  ALLOWED_FILE_TYPES: ['.pkl', '.csv', '.xlsx', '.json']
+};

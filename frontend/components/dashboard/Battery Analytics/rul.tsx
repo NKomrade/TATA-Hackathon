@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Battery, Calendar, CheckCircle, TrendingUp, Clock, Target, Zap, Activity } from "lucide-react";
+import { Battery, Calendar, CheckCircle, Clock, Zap, Activity } from "lucide-react";
+import type { FlaskApiResponse } from "@/lib/types";
+
+interface RulProps {
+  analyticsData: FlaskApiResponse | null;
+}
 
 const models = [
   { id: "bi_lstm", label: "CP Bi LSTM", color: "from-[#10a37f] to-[#0ea46f]" },
@@ -25,10 +30,24 @@ const modelPredictions: Record<string, {
   bogru: { eol: "2026-12-01", cycles: 1300, days: 390, confidence: 94, performance: "Very High", riskLevel: "Very Low" }
 };
 
-const Rul: React.FC = () => {
+const Rul: React.FC<RulProps> = ({ analyticsData }) => {
   const [selectedModel, setSelectedModel] = useState(models[0].id);
   const prediction = modelPredictions[selectedModel];
   const selectedModelInfo = models.find(m => m.id === selectedModel);
+
+  // Use real data from analyticsData if available
+  const realPrediction = analyticsData?.statistical_metrics?.cycle_life_projection;
+  const realHealthData = analyticsData?.battery_health;
+
+  // Override prediction with real data if available
+  const displayPrediction = realPrediction ? {
+    ...prediction,
+    cycles: realPrediction.projected_eol_cycle || prediction.cycles,
+    confidence: Math.round((realPrediction.confidence || 0.92) * 100),
+    eol: realPrediction.projected_eol_cycle 
+      ? new Date(Date.now() + (realPrediction.projected_eol_cycle - (analyticsData?.metadata.total_cycles || 0)) * 24 * 60 * 60 * 1000).toLocaleDateString()
+      : prediction.eol
+  } : prediction;
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
@@ -86,7 +105,7 @@ const Rul: React.FC = () => {
             <CardContent>
               {/* Large EOL Display */}
               <div className="text-center mb-6">
-                <div className="text-4xl font-bold text-white mb-2">{prediction.eol}</div>
+                <div className="text-4xl font-bold text-white mb-2">{displayPrediction.eol}</div>
                 <div className="text-lg text-slate-400">Predicted End of Life Date</div>
                 
                 {/* Confidence Ring */}
@@ -96,11 +115,11 @@ const Rul: React.FC = () => {
                     <circle 
                       cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" 
                       className={`text-[#10a37f]`}
-                      strokeDasharray={`${prediction.confidence * 2.51} 251`}
+                      strokeDasharray={`${displayPrediction.confidence * 2.51} 251`}
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-lg font-bold text-white">{prediction.confidence}%</span>
+                    <span className="text-lg font-bold text-white">{displayPrediction.confidence}%</span>
                   </div>
                 </div>
               </div>
@@ -109,17 +128,17 @@ const Rul: React.FC = () => {
               <div className="grid grid-cols-3 gap-4 mt-6">
                 <div className="text-center p-3 bg-slate-900/60 rounded-lg">
                   <Battery className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                  <div className="text-lg font-semibold text-white">{Math.round(prediction.days / 30)}</div>
+                  <div className="text-lg font-semibold text-white">{Math.round(displayPrediction.days / 30)}</div>
                   <div className="text-xs text-slate-400">Months Left</div>
                 </div>
                 <div className="text-center p-3 bg-slate-900/60 rounded-lg">
                   <Activity className="w-6 h-6 text-orange-400 mx-auto mb-2" />
-                  <div className="text-lg font-semibold text-white">{prediction.performance}</div>
+                  <div className="text-lg font-semibold text-white">{displayPrediction.performance}</div>
                   <div className="text-xs text-slate-400">Performance</div>
                 </div>
                 <div className="text-center p-3 bg-slate-900/60 rounded-lg">
                   <Zap className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-                  <div className="text-lg font-semibold text-white">{prediction.riskLevel}</div>
+                  <div className="text-lg font-semibold text-white">{displayPrediction.riskLevel}</div>
                   <div className="text-xs text-slate-400">Risk Level</div>
                 </div>
               </div>
@@ -136,11 +155,11 @@ const Rul: React.FC = () => {
             <CardContent className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-xs text-slate-400">Accuracy</span>
-                <span className="text-sm font-medium text-[#10a37f]">{prediction.confidence}%</span>
+                <span className="text-sm font-medium text-[#10a37f]">{displayPrediction.confidence}%</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-slate-400">Risk</span>
-                <span className="text-sm font-medium text-orange-400">{prediction.riskLevel}</span>
+                <span className="text-sm font-medium text-orange-400">{displayPrediction.riskLevel}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-slate-400">Status</span>
@@ -157,7 +176,7 @@ const Rul: React.FC = () => {
               <div className="text-xs text-slate-400">Current Date</div>
               <div className="text-sm text-white font-medium">Sep 10, 2025</div>
               <div className="text-xs text-slate-400 mt-2">Days Remaining</div>
-              <div className="text-lg text-[#10a37f] font-bold">{prediction.days}</div>
+              <div className="text-lg text-[#10a37f] font-bold">{displayPrediction.days}</div>
             </CardContent>
           </Card>
         </div>

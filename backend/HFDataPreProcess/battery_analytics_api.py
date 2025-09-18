@@ -23,9 +23,47 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# Custom JSON encoder to handle NumPy types
+class NumpyEncoder(json.JSONEncoder):
+    """Custom JSON encoder that converts NumPy types to Python native types."""
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, (np.bool_, bool)):
+            return bool(obj)
+        elif pd.isna(obj):
+            return None
+        return super().default(obj)
+
+def convert_numpy_types(obj):
+    """Recursively convert NumPy types to Python native types."""
+    if isinstance(obj, dict):
+        return {key: convert_numpy_types(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_numpy_types(item) for item in obj]
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, (np.bool_, bool)):
+        return bool(obj)
+    elif pd.isna(obj):
+        return None
+    else:
+        return obj
+
 # Initialize Flask application
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+# Configure Flask to use custom JSON encoder
+app.json_encoder = NumpyEncoder
 
 # Configure upload settings
 UPLOAD_FOLDER = tempfile.mkdtemp()
@@ -228,6 +266,9 @@ def upload_file():
         # Process the data
         analytics_result = process_battery_data(data)
         
+        # Convert NumPy types to Python native types
+        analytics_result = convert_numpy_types(analytics_result)
+        
         # Clean up temporary files
         for file_path in file_paths:
             try:
@@ -282,31 +323,37 @@ def extract_metadata(data):
     
     for field in metadata_fields:
         if field in data:
-            metadata[field] = data[field]
+            value = data[field]
+            # Convert NumPy types to Python types
+            if isinstance(value, (np.integer, np.floating)):
+                value = float(value) if isinstance(value, np.floating) else int(value)
+            elif pd.isna(value):
+                value = None
+            metadata[field] = value
     
     # Add cycle count
-    metadata['total_cycles'] = len(data['cycle_data'])
+    metadata['total_cycles'] = int(len(data['cycle_data']))
     
     # Add first and last cycle numbers
     cycle_numbers = [cycle.get('cycle_number') for cycle in data['cycle_data'] 
                     if cycle.get('cycle_number') is not None]
     if cycle_numbers:
-        metadata['first_cycle_number'] = min(cycle_numbers)
-        metadata['last_cycle_number'] = max(cycle_numbers)
+        metadata['first_cycle_number'] = int(min(cycle_numbers))
+        metadata['last_cycle_number'] = int(max(cycle_numbers))
     
     # Extract temperature if available in first cycle
     if data['cycle_data'] and 'temperature_in_C' in data['cycle_data'][0]:
         temps = data['cycle_data'][0]['temperature_in_C']
         if temps:
-            metadata['test_temperature_C'] = np.mean(temps)
+            metadata['test_temperature_C'] = float(np.mean(temps))
     
     # Try to extract temperature from cell_id if not found in data
     if 'test_temperature_C' not in metadata and 'cell_id' in metadata:
         cell_id = metadata['cell_id']
-        if cell_id.startswith('CALB_'):
+        if cell_id and cell_id.startswith('CALB_'):
             try:
                 temp = int(cell_id.split('_')[1])
-                metadata['test_temperature_C'] = temp
+                metadata['test_temperature_C'] = float(temp)
             except:
                 pass
     
@@ -698,41 +745,41 @@ def calculate_statistical_metrics(data):
             cycle_numbers.append(cycle_num)
             discharge_capacities.append(discharge_cap)
     
-    # Calculate statistics
+    # Calculate statistics and convert to Python types
     if all_charge_caps:
         result['charge_discharge_stats']['charge_capacity'] = {
-            'mean': np.mean(all_charge_caps),
-            'median': np.median(all_charge_caps),
-            'min': np.min(all_charge_caps),
-            'max': np.max(all_charge_caps),
-            'std_dev': np.std(all_charge_caps)
+            'mean': float(np.mean(all_charge_caps)),
+            'median': float(np.median(all_charge_caps)),
+            'min': float(np.min(all_charge_caps)),
+            'max': float(np.max(all_charge_caps)),
+            'std_dev': float(np.std(all_charge_caps))
         }
     
     if all_discharge_caps:
         result['charge_discharge_stats']['discharge_capacity'] = {
-            'mean': np.mean(all_discharge_caps),
-            'median': np.median(all_discharge_caps),
-            'min': np.min(all_discharge_caps),
-            'max': np.max(all_discharge_caps),
-            'std_dev': np.std(all_discharge_caps)
+            'mean': float(np.mean(all_discharge_caps)),
+            'median': float(np.median(all_discharge_caps)),
+            'min': float(np.min(all_discharge_caps)),
+            'max': float(np.max(all_discharge_caps)),
+            'std_dev': float(np.std(all_discharge_caps))
         }
     
     if all_currents:
         result['current_stats'] = {
-            'mean': np.mean(all_currents),
-            'median': np.median(all_currents),
-            'min': np.min(all_currents),
-            'max': np.max(all_currents),
-            'std_dev': np.std(all_currents)
+            'mean': float(np.mean(all_currents)),
+            'median': float(np.median(all_currents)),
+            'min': float(np.min(all_currents)),
+            'max': float(np.max(all_currents)),
+            'std_dev': float(np.std(all_currents))
         }
     
     if all_voltages:
         result['voltage_stats'] = {
-            'mean': np.mean(all_voltages),
-            'median': np.median(all_voltages),
-            'min': np.min(all_voltages),
-            'max': np.max(all_voltages),
-            'std_dev': np.std(all_voltages)
+            'mean': float(np.mean(all_voltages)),
+            'median': float(np.median(all_voltages)),
+            'min': float(np.min(all_voltages)),
+            'max': float(np.max(all_voltages)),
+            'std_dev': float(np.std(all_voltages))
         }
     
     # Calculate cycle life projection if we have enough data
@@ -757,12 +804,12 @@ def calculate_statistical_metrics(data):
                 eol_cycle = (eol_capacity - intercept) / slope
                 
                 result['cycle_life_projection'] = {
-                    'fade_rate': slope,
-                    'r_squared': r_value**2,
-                    'initial_capacity': initial_capacity,
-                    'eol_capacity': eol_capacity,
+                    'fade_rate': float(slope),
+                    'r_squared': float(r_value**2),
+                    'initial_capacity': float(initial_capacity),
+                    'eol_capacity': float(eol_capacity),
                     'projected_eol_cycle': int(eol_cycle) if eol_cycle > 0 else None,
-                    'confidence': r_value**2  # Use R² as confidence measure
+                    'confidence': float(r_value**2)  # Use R² as confidence measure
                 }
         except Exception as e:
             logger.warning(f"Could not calculate cycle life projection: {str(e)}")
@@ -879,9 +926,12 @@ if __name__ == '__main__':
     # Get port from command line or use default
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 5000
     
-    print(f"Starting Battery Analytics API on http://localhost:{port}")
-    print(f"Try accessing the API at: http://localhost:{port}")
+    print(f"Starting Battery Analytics API on localhost:{port}")
+    print(f"Local access only: http://localhost:{port}")
+    print(f"Health check: http://localhost:{port}/")
+    print(f"Upload endpoint: http://localhost:{port}/api/upload")
     print(f"To upload a file, use: python battery_analytics_client.py --file mock_battery_data.pkl")
+    print("Note: This server is only accessible from localhost for security.")
     
-    # Start the Flask app
-    app.run(host='0.0.0.0', port=port, debug=True)
+    # Start the Flask app - IMPORTANT: bind to localhost only (127.0.0.1)
+    app.run(host='127.0.0.1', port=port, debug=False, threaded=True)
