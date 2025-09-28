@@ -39,8 +39,8 @@ const Analytics: React.FC<AnalyticsProps> = ({ analyticsData }) => {
       title: "Voltage Profile",
       description: "Charge/discharge voltage patterns",
       color: "from-blue-500 to-blue-600",
-      hasData: !!(analyticsData?.voltage_profile?.voltage_profile_plot),
-      plotData: analyticsData?.voltage_profile?.voltage_profile_plot,
+      hasData: !!(analyticsData?.voltage_profile?.differential_voltage_plot),
+      plotData: analyticsData?.voltage_profile?.differential_voltage_plot,
       metrics: analyticsData ? {
         minVoltage: analyticsData.voltage_profile.voltage_stats.min_voltage?.toFixed(2) || "N/A",
         maxVoltage: analyticsData.voltage_profile.voltage_stats.max_voltage?.toFixed(2) || "N/A",
