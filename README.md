@@ -2,7 +2,7 @@
 
 A comprehensive AI-powered battery analytics platform that provides intelligent insights for battery health monitoring, performance prediction, and lifecycle management. This solution combines advanced machine learning algorithms with real-time analytics to optimize battery usage and promote circular economy principles.
 
-## 🎯 Project Overview
+## Project Overview
 
 This platform offers:
 - **AI-Powered Battery Analytics**: Advanced machine learning models for battery health assessment
@@ -11,7 +11,7 @@ This platform offers:
 - **Circular Economy Integration**: Smart recommendations for second-life applications
 - **Interactive Dashboard**: Comprehensive visualization and reporting tools
 
-## 🏗️ Architecture
+## Architecture
 
 The project consists of two main components:
 
@@ -35,7 +35,7 @@ The project consists of two main components:
   - Capacity fade analysis
   - Temperature analytics
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 TATA-Hackathon/
@@ -62,7 +62,7 @@ TATA-Hackathon/
 └── README.md               # This file
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+ and npm/yarn
@@ -147,7 +147,7 @@ Available ML models:
 - Multiple export formats (PDF, CSV, JSON)
 - Customizable report templates
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### Core Endpoints
 - `GET /` - Health check and API information
@@ -170,7 +170,7 @@ const response = await fetch('http://localhost:5000/api/upload', {
 const analytics = await response.json();
 ```
 
-## 🧠 Machine Learning Models
+## Machine Learning Models
 
 ### Supported Algorithms
 1. **LSTM Networks**: For time-series prediction and capacity forecasting
@@ -185,7 +185,7 @@ const analytics = await response.json();
 - **R² Score**: Coefficient of determination for model fit
 - **Training Time**: Model efficiency metrics
 
-## 🔄 Features
+## Features
 
 ### Core Analytics
 - ✅ Battery health assessment with scoring
@@ -208,7 +208,7 @@ const analytics = await response.json();
 - 🔄 Cloud deployment and scaling
 - 🔄 Mobile application support
 
-## 🛠️ Development
+## Development
 
 ### Testing the API
 ```bash
@@ -229,14 +229,14 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 NODE_ENV=development
 ```
 
-## 📈 Performance & Accuracy
+## Performance & Accuracy
 
 - **Prediction Accuracy**: 99%+ for RUL estimation
 - **Processing Speed**: Real-time analysis for datasets up to 100MB
 - **Model Training**: Supports epoch configurations from 10-500
 - **Data Support**: Handles both structured (.csv) and serialized (.pkl) formats
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -244,11 +244,11 @@ NODE_ENV=development
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is developed for the TATA Hackathon and follows the competition guidelines.
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -270,7 +270,7 @@ This project is developed for the TATA Hackathon and follows the competition gui
 ### Debug Mode
 Enable debug information by setting `NODE_ENV=development` in the frontend.
 
-## 📞 Support
+## Support
 
 For technical support or questions:
 - Check the [API documentation](backend/HFDataPreProcess/README_API.md)
