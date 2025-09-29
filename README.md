@@ -170,14 +170,18 @@ const response = await fetch('http://localhost:5000/api/upload', {
 const analytics = await response.json();
 ```
 
-## Machine Learning Models
+## Available Predictive Models
 
-### Supported Algorithms
-1. **LSTM Networks**: For time-series prediction and capacity forecasting
-2. **XGBoost**: High-performance gradient boosting for battery degradation
-3. **Random Forest**: Ensemble method for robust predictions
-4. **SVM**: Pattern recognition for anomaly detection
-5. **Simulated Annealing**: Optimization for battery parameter tuning
+### **Transformer-Based Models**
+- **CPTransformer** - Charge-Patch Transformer (Best performer)
+
+### **Recurrent Neural Networks (RNNs)**
+- **CPBiLSTM** - Charge-Patch Bidirectional LSTM
+- **CPLSTM** - Charge-Patch LSTM
+- **CPBiGRU** - Charge-Patch Bidirectional GRU
+
+### **Multi-Layer Perceptrons (MLPs)**
+- **CPMLP** - Charge-Patch MLP
 
 ### Model Performance Metrics
 - **MAE (Mean Absolute Error)**: Model accuracy measurement
