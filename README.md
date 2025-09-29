@@ -130,12 +130,17 @@ TATA-Hackathon/
 - **Cycle Life Analysis**: Fade rates and projections
 
 ### 3. Predictive Models
-Available ML models:
-- **LSTM**: Long Short-Term Memory networks
-- **XGBoost**: Gradient boosting for performance prediction
-- **Random Forest**: Ensemble learning for classification
-- **SVM**: Support Vector Machines for pattern recognition
-- **AdaBoost**: Adaptive boosting algorithms
+
+#### **Transformer-Based Models**
+- **CPTransformer** - Charge-Patch Transformer (Best performer)
+
+#### **Recurrent Neural Networks (RNNs)**
+- **CPBiLSTM** - Charge-Patch Bidirectional LSTM
+- **CPLSTM** - Charge-Patch LSTM
+- **CPBiGRU** - Charge-Patch Bidirectional GRU
+
+#### **Multi-Layer Perceptrons (MLPs)**
+- **CPMLP** - Charge-Patch MLP
 
 ### 4. RUL Prediction
 - Remaining Useful Life calculations
@@ -169,19 +174,6 @@ const response = await fetch('http://localhost:5000/api/upload', {
 
 const analytics = await response.json();
 ```
-
-## Available Predictive Models
-
-### **Transformer-Based Models**
-- **CPTransformer** - Charge-Patch Transformer (Best performer)
-
-### **Recurrent Neural Networks (RNNs)**
-- **CPBiLSTM** - Charge-Patch Bidirectional LSTM
-- **CPLSTM** - Charge-Patch LSTM
-- **CPBiGRU** - Charge-Patch Bidirectional GRU
-
-### **Multi-Layer Perceptrons (MLPs)**
-- **CPMLP** - Charge-Patch MLP
 
 ### Model Performance Metrics
 - **MAE (Mean Absolute Error)**: Model accuracy measurement
