@@ -432,7 +432,7 @@ export default function BatteryDashboard() {
                       type="file" 
                       className="hidden" 
                       onChange={handleFileSelect} 
-                      accept=".csv,.json,.xlsx"
+                      accept=".csv,.json,.xlsx,.pkl"
                       disabled={isUploading}
                     />
                   </label>
@@ -441,7 +441,7 @@ export default function BatteryDashboard() {
                 <div className="flex items-center justify-center gap-4 text-xs text-slate-500">
                   <div className="flex items-center gap-1">
                     <FileText className="w-3 h-3" />
-                    CSV, JSON, XLSX
+                    CSV, JSON, XLSX, PKL
                   </div>
                   <div className="w-1 h-1 bg-slate-600 rounded-full"></div>
                   <div>Max 50MB</div>

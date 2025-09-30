@@ -36,8 +36,8 @@ const Analytics: React.FC<AnalyticsProps> = ({ analyticsData }) => {
       } : null
     },
     {
-      title: "Voltage Profile",
-      description: "Charge/discharge voltage patterns",
+      title: "Differential Voltage Plot",
+      description: "Differential voltage patterns",
       color: "from-blue-500 to-blue-600",
       hasData: !!(analyticsData?.voltage_profile?.differential_voltage_plot),
       plotData: analyticsData?.voltage_profile?.differential_voltage_plot,
@@ -47,31 +47,6 @@ const Analytics: React.FC<AnalyticsProps> = ({ analyticsData }) => {
         avgVoltage: analyticsData.voltage_profile.voltage_stats.avg_voltage?.toFixed(2) || "N/A"
       } : null
     },
-    {
-      title: "Temperature Impact",
-      description: "Performance vs temperature correlation",
-      color: "from-orange-500 to-red-500",
-      hasData: !!(analyticsData?.temperature_analysis?.temperature_vs_capacity_plot),
-      plotData: analyticsData?.temperature_analysis?.temperature_vs_capacity_plot,
-      metrics: analyticsData ? {
-        avgTemp: analyticsData.temperature_analysis.average_temperature?.toFixed(1) || "N/A",
-        hasData: analyticsData.temperature_analysis.has_temperature_data,
-        range: analyticsData.temperature_analysis.temperature_range ? 
-          `${analyticsData.temperature_analysis.temperature_range.min.toFixed(1)}-${analyticsData.temperature_analysis.temperature_range.max.toFixed(1)}°C` : "N/A"
-      } : null
-    },
-    {
-      title: "Cycle Life Prediction",
-      description: "Expected remaining useful life",
-      color: "from-purple-500 to-pink-500",
-      hasData: !!(analyticsData?.statistical_metrics?.cycle_life_projection),
-      plotData: null, // This would be generated from cycle life projection data
-      metrics: analyticsData?.statistical_metrics?.cycle_life_projection ? {
-        projectedEOL: analyticsData.statistical_metrics.cycle_life_projection.projected_eol_cycle?.toString() || "N/A",
-        confidence: (analyticsData.statistical_metrics.cycle_life_projection.confidence * 100).toFixed(1) || "N/A",
-        fadeRate: analyticsData.statistical_metrics.cycle_life_projection.fade_rate?.toFixed(4) || "N/A"
-      } : null
-    }
   ];
 
   // Summary Stats - use real data if available, fallback to mock data
@@ -98,17 +73,17 @@ const Analytics: React.FC<AnalyticsProps> = ({ analyticsData }) => {
       color: "text-orange-400"
     },
     {
-      value: analyticsData.statistical_metrics.cycle_life_projection?.projected_eol_cycle
-        ? analyticsData.statistical_metrics.cycle_life_projection.projected_eol_cycle.toString()
+      value: analyticsData.metadata.nominal_capacity_in_Ah
+        ? analyticsData.metadata.nominal_capacity_in_Ah.toString()
         : "N/A",
-      label: "Est. RUL (cycles)",
+      label: "Nominal Capacity (in Ah)",
       color: "text-purple-400"
     }
   ] : [
     { value: "85%", label: "Battery Health", color: "text-[#10a37f]" },
     { value: "1,247", label: "Cycles Completed", color: "text-blue-400" },
     { value: "28°C", label: "Avg Temperature", color: "text-orange-400" },
-    { value: "756", label: "Est. RUL (cycles)", color: "text-purple-400" }
+    { value: "756", label: "Nominal Capacity (in Ah)", color: "text-purple-400" }
   ];
 
   return (
