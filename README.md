@@ -62,192 +62,6 @@ TATA-Hackathon/
 └── README.md               # This file
 ```
 
-## Dependencies & Libraries
-
-### Frontend Dependencies (Node.js/npm)
-
-#### Core Framework & Runtime
-```json
-{
-  "next": "15.3.5",
-  "react": "^19.0.0",
-  "react-dom": "^19.0.0",
-  "typescript": "^5"
-}
-```
-
-#### UI Components & Styling
-```json
-{
-  "@radix-ui/react-checkbox": "^1.3.2",
-  "@radix-ui/react-dialog": "^1.1.14",
-  "@radix-ui/react-dropdown-menu": "^2.0.6",
-  "@radix-ui/react-progress": "^1.1.7",
-  "@radix-ui/react-select": "^2.2.5",
-  "@radix-ui/react-separator": "^1.1.7",
-  "@radix-ui/react-slot": "^1.2.3",
-  "@radix-ui/react-switch": "^1.2.5",
-  "@radix-ui/react-tooltip": "^1.2.7",
-  "tailwindcss": "^4",
-  "tailwind-merge": "^3.3.1",
-  "class-variance-authority": "^0.7.1",
-  "clsx": "^2.1.1"
-}
-```
-
-#### Icons & Animation
-```json
-{
-  "@tabler/icons-react": "^3.34.1",
-  "lucide-react": "^0.525.0",
-  "framer-motion": "^11.0.0",
-  "motion": "^12.23.9"
-}
-```
-
-#### Data Visualization
-```json
-{
-  "recharts": "^2.8.0"
-}
-```
-
-#### Development Dependencies
-```json
-{
-  "@eslint/eslintrc": "^3",
-  "@tailwindcss/forms": "^0.5.7",
-  "@tailwindcss/postcss": "^4",
-  "@tailwindcss/typography": "^0.5.13",
-  "@types/node": "^20",
-  "@types/react": "^19",
-  "@types/react-dom": "^19",
-  "autoprefixer": "^10.4.16",
-  "eslint": "^9",
-  "eslint-config-next": "15.3.5",
-  "postcss": "^8.4.32",
-  "tw-animate-css": "^1.3.5"
-}
-```
-
-### Backend Dependencies (Python)
-
-#### Core Framework & Web Server
-```bash
-flask>=2.0.0              # Web framework for API server
-flask-cors>=3.0.0          # Cross-Origin Resource Sharing support
-```
-
-#### Data Processing & Analysis
-```bash
-pandas>=1.3.0             # Data manipulation and analysis
-numpy>=1.21.0             # Numerical computing
-scipy>=1.7.0              # Scientific computing (for statistical analysis)
-```
-
-#### Visualization & Graphics
-```bash
-matplotlib>=3.5.0         # Plotting and visualization
-```
-
-#### Machine Learning & Statistics
-```bash
-scikit-learn>=1.0.0       # Machine learning algorithms and metrics
-```
-
-#### File Processing & Utilities
-```bash
-pickle                    # Python object serialization (built-in)
-tempfile                  # Temporary file operations (built-in)
-base64                    # Base64 encoding/decoding (built-in)
-json                      # JSON operations (built-in)
-```
-
-#### HTTP & API Clients
-```bash
-requests>=2.25.0          # HTTP library for API testing
-```
-
-#### System & Logging
-```bash
-os                        # Operating system interface (built-in)
-io                        # Core I/O operations (built-in)
-logging                   # Logging facility (built-in)
-traceback                 # Stack trace utilities (built-in)
-argparse                  # Command-line argument parsing (built-in)
-glob                      # Unix shell-style pathname pattern expansion (built-in)
-```
-
-### System Requirements
-
-#### Minimum Requirements
-- **Node.js**: 18.0.0 or higher
-- **npm**: 8.0.0 or higher (or yarn 1.22.0+)
-- **Python**: 3.8.0 or higher
-- **pip**: 21.0.0 or higher
-
-#### Recommended Requirements
-- **Node.js**: 20.0.0 LTS
-- **Python**: 3.9.0 or higher
-- **RAM**: 4GB minimum, 8GB recommended
-- **Storage**: 2GB free space for dependencies and data processing
-- **OS**: Windows 10/11, macOS 10.15+, Ubuntu 18.04+
-
-### Installation Commands
-
-#### Frontend Setup (Complete)
-```bash
-# Navigate to frontend directory
-cd frontend/
-
-# Install all dependencies
-npm install
-
-# Alternative with yarn
-yarn install
-
-# Install specific dependency categories
-npm install next react react-dom typescript
-npm install @radix-ui/react-* lucide-react framer-motion
-npm install tailwindcss @tailwindcss/* recharts
-```
-
-#### Backend Setup (Complete)
-```bash
-# Navigate to backend directory
-cd backend/HFDataPreProcess/
-
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install core dependencies
-pip install flask flask-cors
-pip install pandas numpy scipy
-pip install matplotlib scikit-learn
-pip install requests
-
-# Or install all at once
-pip install flask flask-cors pandas numpy scipy matplotlib scikit-learn requests
-```
-
-#### Alternative Backend Installation (requirements.txt format)
-```bash
-# If you prefer to create a requirements.txt file:
-pip freeze > requirements.txt  # After manual installation
-pip install -r requirements.txt  # For fresh installation
-```
-
-### Version Compatibility Notes
-
-- **Next.js 15**: Requires Node.js 18.17.0 or higher
-- **React 19**: Latest stable version with improved concurrent features
-- **TypeScript 5**: Full compatibility with Next.js 15 and React 19
-- **Radix UI**: Latest stable versions for accessible components
-- **Python 3.8+**: Required for modern pandas and numpy compatibility
-- **Flask 2.0+**: Includes async support and improved performance
-- **Matplotlib 3.5+**: Required for proper base64 image encoding
-
 ## Getting Started
 
 ### Prerequisites
@@ -316,12 +130,17 @@ pip install -r requirements.txt  # For fresh installation
 - **Cycle Life Analysis**: Fade rates and projections
 
 ### 3. Predictive Models
-Available ML models:
-- **LSTM**: Long Short-Term Memory networks
-- **XGBoost**: Gradient boosting for performance prediction
-- **Random Forest**: Ensemble learning for classification
-- **SVM**: Support Vector Machines for pattern recognition
-- **AdaBoost**: Adaptive boosting algorithms
+
+#### **Transformer-Based Models**
+- **CPTransformer** - Charge-Patch Transformer (Best performer)
+
+#### **Recurrent Neural Networks (RNNs)**
+- **CPBiLSTM** - Charge-Patch Bidirectional LSTM
+- **CPLSTM** - Charge-Patch LSTM
+- **CPBiGRU** - Charge-Patch Bidirectional GRU
+
+#### **Multi-Layer Perceptrons (MLPs)**
+- **CPMLP** - Charge-Patch MLP
 
 ### 4. RUL Prediction
 - Remaining Useful Life calculations
@@ -355,15 +174,6 @@ const response = await fetch('http://localhost:5000/api/upload', {
 
 const analytics = await response.json();
 ```
-
-## Machine Learning Models
-
-### Supported Algorithms
-1. **LSTM Networks**: For time-series prediction and capacity forecasting
-2. **XGBoost**: High-performance gradient boosting for battery degradation
-3. **Random Forest**: Ensemble method for robust predictions
-4. **SVM**: Pattern recognition for anomaly detection
-5. **Simulated Annealing**: Optimization for battery parameter tuning
 
 ### Model Performance Metrics
 - **MAE (Mean Absolute Error)**: Model accuracy measurement
