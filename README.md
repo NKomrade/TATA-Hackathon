@@ -39,49 +39,27 @@ The project consists of two main components:
 
 ```
 TATA-Hackathon/
-├── frontend/                           # Next.js Frontend Application
-│   ├── app/                           # Next.js App Router
-│   │   ├── api/                       # API routes
-│   │   ├── dashboard/                 # Dashboard pages
-│   │   ├── favicon.ico                # App favicon
-│   │   ├── globals.css                # Global styles
-│   │   ├── layout.tsx                 # Root layout
-│   │   └── page.tsx                   # Main landing page
-│   ├── components/                    # React components
-│   │   ├── common/                    # Common components
-│   │   ├── dashboard/                 # Dashboard-specific components
-│   │   │   ├── Battery Analytics/     # Battery analytics components
-│   │   │   └── Predictions/           # Prediction components
-│   │   ├── layout/                    # Layout components
-│   │   ├── ui/                        # UI components (shadcn/ui)
-│   │   └── client-only.tsx            # Client-only wrapper
-│   ├── hooks/                         # Custom React hooks
-│   ├── lib/                           # Utility libraries
-│   ├── public/                        # Static assets
-│   ├── types/                         # Global type definitions
-│   ├── components.json                # shadcn/ui configuration
-│   ├── eslint.config.mjs              # ESLint configuration
-│   ├── next.config.ts                 # Next.js configuration
-│   ├── package.json                   # Frontend dependencies
-│   ├── postcss.config.mjs             # PostCSS configuration
-│   ├── README.md                      # Frontend documentation
-│   └── tsconfig.json                  # TypeScript configuration
-├── backend/                           # Python Backend
-│   └── HFDataPreProcess/              # Battery analytics API & tools
-│       ├── battery_data_export/       # Exported battery data
-│       ├── CALB/                      # CALB battery data files
-│       ├── test_data/                 # Test datasets
-│       ├── analyze_calb_data.py       # Data analysis tools
-│       ├── battery_analytics_api.py   # Main Flask API server
-│       ├── battery_analytics_client.py # API client for testing
-│       ├── battery_data_exploration.ipynb # Jupyter notebook for exploration
-│       ├── convert_calb_data.py       # Data format conversion
-│       ├── explore_calb_data.py       # Data exploration utilities
-│       ├── test_api.py                # API endpoint testing
-│       ├── test_battery_api.py        # Battery API unit tests
-│       ├── README.md                  # Backend documentation
-│       └── README_API.md              # API documentation
-└── README.md                          # This file
+├── frontend/                 # Next.js Frontend Application
+│   ├── app/                 # Next.js App Router
+│   │   ├── dashboard/       # Dashboard pages
+│   │   │   ├── analytics/   # Analytics dashboard
+│   │   │   ├── predictions/ # ML predictions interface
+│   │   │   └── reports/     # Report generation
+│   │   └── page.tsx         # Main landing page
+│   ├── components/          # React components
+│   │   └── dashboard/       # Dashboard-specific components
+│   ├── lib/                 # Utility libraries
+│   │   ├── api.ts          # API client
+│   │   ├── constants.ts    # App constants
+│   │   └── types.ts        # TypeScript definitions
+│   └── types/              # Global type definitions
+├── backend/                 # Python Backend
+│   └── HFDataPreProcess/    # Battery analytics API
+│       ├── battery_analytics_api.py      # Main Flask API
+│       ├── battery_analytics_client.py   # API client
+│       ├── test_api.py                   # API testing
+│       └── README_API.md                 # API documentation
+└── README.md               # This file
 ```
 
 ## Getting Started

@@ -1,12 +1,62 @@
 "use client"
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Battery, TrendingUp, Brain, Clock, FileText, Download, Eye, Calendar } from "lucide-react";
+import { FlaskApiResponse } from "@/lib/types";
 
 export default function Reports() {
-  const analyticsData = [
+  const [analyticsData, setAnalyticsData] = useState<FlaskApiResponse | null>(null);
+
+  useEffect(() => {
+    // Load analytics data from sessionStorage
+    const storedData = sessionStorage.getItem('batteryAnalytics');
+    if (storedData) {
+      try {
+        const parsed = JSON.parse(storedData);
+        setAnalyticsData(parsed);
+      } catch (error) {
+        console.error('Failed to parse stored analytics data:', error);
+      }
+    }
+  }, []);
+
+  const analyticsDataArray = analyticsData ? [
+    {
+      id: 1,
+      title: "Battery Analyzed",
+      value: analyticsData.metadata.cell_id || "Unknown",
+      bgColor: "bg-blue-500",
+      icon: <Battery className="w-6 h-6 text-white" />,
+      textColor: "text-blue-500"
+    },
+    {
+      id: 2,
+      title: "Health Score",
+      value: analyticsData.battery_health.health_score ? `${analyticsData.battery_health.health_score.toFixed(1)}%` : "N/A",
+      bgColor: "bg-green-500",
+      icon: <TrendingUp className="w-6 h-6 text-white" />,
+      textColor: "text-green-500"
+    },
+    {
+      id: 3,
+      title: "Total Cycles",
+      value: analyticsData.metadata.total_cycles.toString(),
+      bgColor: "bg-purple-500",
+      icon: <Brain className="w-6 h-6 text-white" />,
+      textColor: "text-purple-500"
+    },
+    {
+      id: 4,
+      title: "Capacity Retention",
+      value: analyticsData.capacity_fade.capacity_retention_percentage ? 
+        `${analyticsData.capacity_fade.capacity_retention_percentage.toFixed(1)}%` : "N/A",
+      bgColor: "bg-orange-500",
+      icon: <Clock className="w-6 h-6 text-white" />,
+      textColor: "text-orange-500"
+    }
+  ] : [
     {
       id: 1,
       title: "Total Batteries Analyzed",
@@ -41,9 +91,16 @@ export default function Reports() {
     }
   ];
 
-  const keyInsights = [
+  const keyInsights = analyticsData ? [
+    `Battery health status: ${analyticsData.battery_health.health_status || "Unknown"}`,
+    `Capacity fade rate: ${analyticsData.capacity_fade.capacity_fade_rate_per_cycle?.toFixed(4) || "N/A"}% per cycle`,
+    `Temperature: ${analyticsData.metadata.test_temperature_C || "N/A"}°C`,
+    ...(analyticsData.battery_health.degradation_indicators.length > 0 ? 
+      [`Degradation indicators: ${analyticsData.battery_health.degradation_indicators.join(", ")}`] : 
+      ["No significant degradation indicators detected"])
+  ] : [
     "Battery performance is within expected parameters",
-    "3 batteries recommended for second-life applications",
+    "3 batteries recommended for second-life applications", 
     "Model accuracy improved by 15% in last training cycle"
   ];
 
@@ -114,7 +171,7 @@ export default function Reports() {
 
               {/* Metrics Grid */}
               <div className="grid grid-cols-1 gap-4 mb-6">
-                {analyticsData.map((metric) => (
+                {analyticsDataArray.map((metric) => (
                   <div key={metric.id} className="flex items-center gap-3">
                     {/* Icon with colored background */}
                     <div className={`w-12 h-12 ${metric.bgColor} rounded-xl flex items-center justify-center shadow-lg`}>

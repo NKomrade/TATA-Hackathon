@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Upload, Cloud, FileText, Zap, Shield, FolderOpen, Loader2 } from "lucide-react"
+import { apiClient } from "@/lib/api";
+import type { FlaskApiResponse } from "@/lib/types";
 
 export default function BatteryDashboard() {
   const [dragActive, setDragActive] = useState(false)
@@ -17,6 +19,8 @@ export default function BatteryDashboard() {
   const [showS3Browser, setShowS3Browser] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [uploadedAnalytics, setUploadedAnalytics] = useState<FlaskApiResponse | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
@@ -60,11 +64,90 @@ export default function BatteryDashboard() {
       setIsProcessing(false)
     }, 4000)
 
-    // Redirect to dashboard
+    // Redirect to dashboard with analytics data
     setTimeout(() => {
-      router.push('/dashboard/analytics')
+      // Double-check that data is still in storage before redirect
+      const storedData = sessionStorage.getItem('batteryAnalytics');
+      if (storedData) {
+        console.log('Data confirmed in storage before redirect, length:', storedData.length);
+        router.push('/dashboard/analytics')
+      } else {
+        console.error('Data lost from storage before redirect');
+        // Try to restore from uploadedAnalytics state
+        if (uploadedAnalytics) {
+          const dataToStore = JSON.stringify(uploadedAnalytics);
+          sessionStorage.setItem('batteryAnalytics', dataToStore);
+          localStorage.setItem('batteryAnalytics', dataToStore);
+          console.log('Restored data to storage before redirect');
+          router.push('/dashboard/analytics')
+        } else {
+          setUploadError('Data was lost during processing. Please try uploading again.');
+        }
+      }
     }, 6000)
   }
+
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true);
+    setUploadProgress(0);
+    setUploadError(null);
+
+    try {
+      // Simulate progress during upload
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
+      // Upload to Flask API
+      const result = await apiClient.uploadAndProcessBatteryData(file);
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      if (result.success && result.analytics) {
+        console.log('Upload successful, analytics data received:', result.analytics); // Debug log
+        console.log('Analytics data keys:', Object.keys(result.analytics)); // Debug log
+        
+        // Validate the analytics data structure
+        if (result.analytics && typeof result.analytics === 'object') {
+          // Store data IMMEDIATELY upon successful upload
+          const dataToStore = JSON.stringify(result.analytics);
+          sessionStorage.setItem('batteryAnalytics', dataToStore);
+          localStorage.setItem('batteryAnalytics', dataToStore);
+          localStorage.setItem('batteryAnalyticsTimestamp', Date.now().toString());
+          
+          console.log('Data stored immediately, length:', dataToStore.length);
+          
+          // Verify storage worked
+          const verification = sessionStorage.getItem('batteryAnalytics');
+          if (verification) {
+            console.log('Storage verification successful, length:', verification.length);
+          } else {
+            console.error('Storage verification failed - data not found in sessionStorage');
+          }
+          
+          setUploadedAnalytics(result.analytics);
+          setIsUploading(false);
+          startProcessingFlow();
+        } else {
+          throw new Error("Invalid analytics data format received from server");
+        }
+      } else {
+        throw new Error(result.error || "Upload failed - no analytics data received");
+      }
+    } catch (error) {
+      setIsUploading(false);
+      setUploadProgress(0);
+      setUploadError(error instanceof Error ? error.message : "Upload failed");
+      console.error("Upload error:", error);
+    }
+  };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
@@ -72,15 +155,13 @@ export default function BatteryDashboard() {
     setDragActive(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      console.log("File dropped:", e.dataTransfer.files[0])
-      simulateUpload()
+      handleFileUpload(e.dataTransfer.files[0]);
     }
   }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      console.log("File selected:", e.target.files[0])
-      simulateUpload()
+      handleFileUpload(e.target.files[0]);
     }
   }
 
@@ -126,35 +207,7 @@ export default function BatteryDashboard() {
 
   const selectS3File = async (fileName: string) => {
     setShowS3Browser(false)
-    setIsUploading(true)
-    setUploadProgress(0)
-    
-    try {
-      // Simulate S3 file import
-      const interval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval)
-            setIsUploading(false)
-            console.log(`S3 file imported: ${fileName}`)
-            startProcessingFlow()
-            return 100
-          }
-          return prev + 15
-        })
-      }, 150)
-      
-      // Here you would make an API call to import the file from S3
-      // const response = await fetch(`/api/s3/import`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ fileName })
-      // })
-      
-    } catch (error) {
-      console.error('Error importing S3 file:', error)
-      setIsUploading(false)
-    }
+    setUploadError(`S3 integration not implemented for file: ${fileName}`);
   }
 
   return (
@@ -200,7 +253,7 @@ export default function BatteryDashboard() {
                 <div className="absolute inset-0 w-20 h-20 bg-orange-500/30 rounded-2xl transform rotate-12 blur-lg animate-pulse"></div>
               </div>
             </div>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-white via-[#10a37f]/30 to-[#10a37f]/50 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
               Intelligent Battery Analytics
             </h2>
           </div> */}
@@ -379,7 +432,7 @@ export default function BatteryDashboard() {
                       type="file" 
                       className="hidden" 
                       onChange={handleFileSelect} 
-                      accept=".csv,.json,.xlsx"
+                      accept=".csv,.json,.xlsx,.pkl"
                       disabled={isUploading}
                     />
                   </label>
@@ -388,7 +441,7 @@ export default function BatteryDashboard() {
                 <div className="flex items-center justify-center gap-4 text-xs text-slate-500">
                   <div className="flex items-center gap-1">
                     <FileText className="w-3 h-3" />
-                    CSV, JSON, XLSX
+                    CSV, JSON, XLSX, PKL
                   </div>
                   <div className="w-1 h-1 bg-slate-600 rounded-full"></div>
                   <div>Max 50MB</div>
@@ -400,15 +453,47 @@ export default function BatteryDashboard() {
                 </div>
               </div>
 
+              {/* Error Message */}
+              {uploadError && (
+                <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-center">
+                  <div className="flex items-center justify-center gap-2 text-red-400 mb-2">
+                    <span className="font-medium">Upload Failed</span>
+                  </div>
+                  <div className="text-sm text-red-300 mb-4 whitespace-pre-line">
+                    {uploadError}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button 
+                      onClick={() => setUploadError(null)}
+                      className="text-xs bg-red-500/20 hover:bg-red-500/30"
+                    >
+                      Try Again
+                    </Button>
+                    {uploadError.includes('Flask API server is not running') && (
+                      <div className="mt-3 p-3 bg-slate-800 rounded text-xs text-slate-300">
+                        <div className="font-semibold mb-2">Quick Start Instructions:</div>
+                        <div className="text-left space-y-1">
+                          <div>1. Open Command Prompt/Terminal</div>
+                          <div>2. Navigate to: <code className="bg-slate-700 px-1">d:\Dev\TATA-Hackathon\backend\HFDataPreProcess</code></div>
+                          <div>3. Run: <code className="bg-slate-700 px-1">python battery_analytics_api.py</code></div>
+                          <div>4. Wait for "Starting Battery Analytics API" message</div>
+                          <div>5. Come back and try uploading again</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Success Message */}
-              {uploadProgress === 100 && !isUploading && (
+              {uploadProgress === 100 && !isUploading && !uploadError && (
                 <div className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-center">
                   <div className="flex items-center justify-center gap-2 text-green-400 mb-2">
                     <Zap className="w-5 h-5" />
                     <span className="font-medium">Upload Complete!</span>
                   </div>
                   <p className="text-sm text-green-300">
-                    Your battery dataset has been uploaded successfully. Processing will begin shortly.
+                    Your battery dataset has been uploaded and analyzed successfully.
                   </p>
                 </div>
               )}

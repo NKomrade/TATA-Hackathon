@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import {
   LineChart,
   TrendingUp,
-  BatteryCharging,
   BarChart,
   Play,
   CheckCircle,
@@ -21,61 +20,70 @@ import {
   Loader2,
   Trophy,
   Activity,
-  Zap,
-  Pause,
   AlertTriangle
 } from "lucide-react";
 
 const modelOptions = [
-  { id: "lstm", label: "LSTM", description: "Long Short-Term Memory Network" },
-  { id: "xgboost", label: "XGBoost", description: "Extreme Gradient Boosting" },
-  { id: "annealing", label: "Simulated Annealing", description: "Optimization Algorithm" },
-  { id: "adaboost", label: "Adaboost", description: "Adaptive Boosting Ensemble" },
+  { id: "cptransformer", label: "CPTransformer", description: "Transformer-based model" },
+  { id: "cpbigru", label: "CPBiGRU", description: "Gated Recurrent Unit" },
+  { id: "cpbilstm", label: "CPBiLSTM", description: "Bidirectional Long Short-Term Memory Network" },
+  { id: "cplstm", label: "CPLSTM", description: "Long Short-Term Memory Network" },
+  { id: "cpmlp", label: "CPMLP", description: "Multi-Layer Perceptron" },
 ];
 
 const epochOptions = [10, 50, 100, 200, 500];
 
 const modelComparison = [
   {
-    model: "LSTM",
-    mae: 0.12,
-    rmse: 0.18,
-    r2: 0.91,
-    time: "2m 10s",
-    status: "Completed",
-    accuracy: 91.2,
-    progress: 100
+    model: "CPTransformer",
+    mae: 0.748,
+    rmse: 0.882,
+    mape: 0.0804,
+    accuracy10: "0.788",
+    accuracy15: "0.90",
+    time: "4.433s",
+    status: "Completed"
+  },
+    {
+    model: "CPMLP",
+    mae: 0.715,
+    rmse: 0.901,
+    mape: 0.0906,
+    accuracy10: "0.586",
+    accuracy15: "0.862",
+    time: "2.418s",
+    status: "Completed"
   },
   {
-    model: "XGBoost", 
-    mae: 0.15,
-    rmse: 0.21,
-    r2: 0.89,
-    time: "1m 45s",
-    status: "Training",
-    accuracy: 89.3,
-    progress: 73
+    model: "CPLSTM",
+    mae: 0.696,
+    rmse: 0.832,
+    mape: 0.0760,
+    accuracy10: "0.712",
+    accuracy15: "0.752",
+    time: "5.21s",
+    status: "Completed"
   },
   {
-    model: "Simulated Annealing",
-    mae: 0.19,
-    rmse: 0.25,
-    r2: 0.85,
-    time: "3m 05s",
-    status: "Pending",
-    accuracy: 85.1,
-    progress: 0
+    model: "CPBiGRU",
+    mae: null,
+    rmse: null,
+    mape: null,
+    accuracy10: null,
+    accuracy15: null,
+    time: null,
+    status: "Pending"
   },
   {
-    model: "Adaboost",
-    mae: 0.17,
-    rmse: 0.23,
-    r2: 0.87,
-    time: "2m 30s",
-    status: "Failed",
-    accuracy: 87.4,
-    progress: 45
-  },
+    model: "CPBiLSTM",
+    mae: null,
+    rmse: null,
+    mape: null,
+    accuracy10: null,
+    accuracy15: null,
+    time: null,
+    status: "Pending"
+  }
 ];
 
 const Predictions: React.FC = () => {
@@ -197,7 +205,7 @@ const Predictions: React.FC = () => {
             <div className="flex flex-col justify-end space-y-2">
               <Button
                 className="bg-gradient-to-r from-[#10a37f] to-[#0ea46f] hover:from-[#0ea46f] hover:to-[#10a37f] text-white disabled:opacity-50"
-                onClick={handleStartTraining}
+                // onClick={handleStartTraining}
                 disabled={isTraining}
               >
                 {isTraining ? (
@@ -332,11 +340,11 @@ const Predictions: React.FC = () => {
                   <th className="text-left py-3 px-4 text-slate-300 font-medium">Model</th>
                   <th className="text-left py-3 px-4 text-slate-300 font-medium">Status</th>
                   <th className="text-left py-3 px-4 text-slate-300 font-medium">MAE</th>
+                  <th className="text-left py-3 px-4 text-slate-300 font-medium">MAPE</th>
                   <th className="text-left py-3 px-4 text-slate-300 font-medium">RMSE</th>
-                  <th className="text-left py-3 px-4 text-slate-300 font-medium">R²</th>
-                  <th className="text-left py-3 px-4 text-slate-300 font-medium">Accuracy</th>
                   <th className="text-left py-3 px-4 text-slate-300 font-medium">Time</th>
-                  <th className="text-left py-3 px-4 text-slate-300 font-medium">Progress</th>
+                  <th className="text-left py-3 px-4 text-slate-300 font-medium">Accuracy(10%)</th>
+                  <th className="text-left py-3 px-4 text-slate-300 font-medium">Accuracy(15%)</th>
                 </tr>
               </thead>
               <tbody>
@@ -352,35 +360,16 @@ const Predictions: React.FC = () => {
                       </div>
                     </td>
                     <td className="py-3 px-4 text-slate-300">{row.mae}</td>
+                    <td className="py-3 px-4 text-slate-300">{row.mape}</td>
                     <td className="py-3 px-4 text-slate-300">{row.rmse}</td>
-                    <td className="py-3 px-4 text-slate-300">{row.r2}</td>
-                    <td className="py-3 px-4">
-                      <span className={`font-medium ${row.accuracy > 90 ? 'text-[#10a37f]' : row.accuracy > 85 ? 'text-blue-400' : 'text-orange-400'}`}>
-                        {row.accuracy}%
-                      </span>
-                    </td>
                     <td className="py-3 px-4 text-slate-300">
                       <div className="flex items-center gap-2">
                         <Timer className="w-4 h-4 text-slate-400" />
                         {row.time}
                       </div>
                     </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 bg-slate-700 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full transition-all duration-300 ${
-                              row.status === 'Completed' ? 'bg-gradient-to-r from-[#10a37f] to-[#0ea46f]' :
-                              row.status === 'Training' ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
-                              row.status === 'Failed' ? 'bg-gradient-to-r from-red-500 to-red-600' :
-                              'bg-slate-600'
-                            }`}
-                            style={{ width: `${row.progress}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-xs text-slate-400 w-10">{row.progress}%</span>
-                      </div>
-                    </td>
+                    <td className="py-3 px-4 text-slate-300">{row.accuracy10}</td>
+                    <td className="py-3 px-4">{row.accuracy15}</td>
                   </tr>
                 ))}
               </tbody>

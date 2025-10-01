@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import type { FlaskApiResponse } from "@/lib/types";
 
-const Reuse: React.FC = () => {
+interface ReuseProps {
+  analyticsData: FlaskApiResponse | null;
+}
+
+const Reuse: React.FC<ReuseProps> = ({ analyticsData }) => {
   const [selectedScenario, setSelectedScenario] = useState("ess");
 
   const reuseScenarios = [
@@ -55,13 +60,56 @@ const Reuse: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "good": return "text-[#10a37f]";
-      case "fair": return "text-orange-400";
-      case "normal": return "text-blue-400";
-      case "current": return "text-purple-400";
-      default: return "text-slate-400";
+      case 'baseline': return 'text-blue-400';
+      case 'current': return 'text-[#10a37f]';
+      case 'good': return 'text-green-400';
+      case 'fair': return 'text-yellow-400';
+      case 'normal': return 'text-slate-300';
+      default: return 'text-slate-400';
     }
   };
+
+  // Use real data if available
+  const realSpecs = analyticsData ? [
+    {
+      label: "Original Capacity",
+      value: analyticsData.metadata.nominal_capacity_in_Ah 
+        ? `${analyticsData.metadata.nominal_capacity_in_Ah} Ah`
+        : "85 kWh",
+      status: "baseline"
+    },
+    {
+      label: "Current Capacity", 
+      value: analyticsData.capacity_fade.discharge_capacities.length > 0
+        ? `${(analyticsData.capacity_fade.discharge_capacities[analyticsData.capacity_fade.discharge_capacities.length - 1] || 0).toFixed(1)} Ah`
+        : "68 kWh",
+      status: "current"
+    },
+    {
+      label: "Remaining Capacity",
+      value: analyticsData.capacity_fade.capacity_retention_percentage
+        ? `${Math.round(analyticsData.capacity_fade.capacity_retention_percentage)}%`
+        : "80%",
+      status: "good"
+    },
+    {
+      label: "Cycle Count",
+      value: analyticsData.metadata.total_cycles.toString(),
+      status: "normal"
+    },
+    {
+      label: "State of Health",
+      value: analyticsData.battery_health.health_score
+        ? `${Math.round(analyticsData.battery_health.health_score)}%`
+        : "72%",
+      status: analyticsData.battery_health.health_score && analyticsData.battery_health.health_score > 80 ? "good" : "fair"
+    },
+    {
+      label: "Internal Resistance",
+      value: "1.2 mΩ", // This would need to be calculated from the data
+      status: "normal"
+    }
+  ] : batterySpecs;
 
   return (
     <div className="space-y-6">
@@ -81,7 +129,7 @@ const Reuse: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {batterySpecs.map((spec, index) => (
+            {realSpecs.map((spec, index) => (
               <div key={index} className="bg-slate-900/60 rounded-lg p-4 border border-slate-700/50">
                 <div className="text-xs text-slate-400 mb-1">{spec.label}</div>
                 <div className={`text-lg font-semibold ${getStatusColor(spec.status)}`}>

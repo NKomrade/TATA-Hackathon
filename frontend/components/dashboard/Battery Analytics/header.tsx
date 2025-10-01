@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import type { FlaskApiResponse } from "@/lib/types";
 
 const options = [
   { label: "Battery Analytics", value: "analytics" },
@@ -7,13 +8,17 @@ const options = [
   { label: "Reuse Modeling", value: "reuse" },
 ];
 
+interface AnalyticsHeaderProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  analyticsData: FlaskApiResponse | null;
+}
+
 export default function AnalyticsHeader({
   activeTab,
   setActiveTab,
-}: {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-}) {
+  analyticsData,
+}: AnalyticsHeaderProps) {
   return (
     <div>
       {/* Header Navigation */}
