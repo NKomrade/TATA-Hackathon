@@ -24,32 +24,14 @@ from data_provider.data_split_recorder import split_recorder
 import accelerate
 from denseweight import DenseWeight
 warnings.filterwarnings('ignore')
+
+# Keep only CALB-related dataset ids
 datasetName2ids = {
-    'CALCE':0,
-    'HNEI':1,
-    'HUST':2,
-    'MATR':3,
-    'RWTH':4,
-    'SNL':5,
-    'MICH':6,
-    'MICH_EXP':7,
-    'Tongji1':8,
-    'Stanford':9,
-    'ISU-ILCC':11,
-    'XJTU':12,
-    'ZN-coin':13,
-    'UL-PUR':14,
-    'Tongji2':15,
-    'Tongji3':16,
-    'CALB':17,
-    'ZN42':22,
-    'ZN2024':23,
-    'CALB42':24,
-    'CALB2024':25,
-    'NA-ion':27,
-    'NA-ion42':28,
-    'NA-ion2024':29,
+    'CALB': 17,
+    'CALB42': 24,
+    'CALB2024': 25,
 }
+
 def my_collate_fn_withId(samples):
     cycle_curve_data = torch.vstack([i['cycle_curve_data'].unsqueeze(0) for i in samples])
     curve_attn_mask = torch.vstack([i['curve_attn_mask'].unsqueeze(0) for i in samples])
@@ -104,82 +86,12 @@ class Dataset_original(Dataset):
         self.need_keys = ['current_in_A', 'voltage_in_V', 'charge_capacity_in_Ah', 'discharge_capacity_in_Ah', 'time_in_s']
         self.aug_helper = BatchAugmentation_battery_revised()
         assert flag in ['train', 'test', 'val']
-        if self.dataset == 'exp':
-            self.train_files = split_recorder.Stanford_train_files[:3]
-            self.val_files = split_recorder.Tongji_val_files[:2] + split_recorder.HUST_val_files[:2]
-            self.test_files =  split_recorder.Tongji_test_files[:2] + split_recorder.HUST_test_files[:2]
-        elif self.dataset == 'Tongji':
-            self.train_files = split_recorder.Tongji_train_files
-            self.val_files = split_recorder.Tongji_val_files
-            self.test_files = split_recorder.Tongji_test_files
-        elif self.dataset == 'HUST':
-            self.train_files = split_recorder.HUST_train_files
-            self.val_files = split_recorder.HUST_val_files
-            self.test_files = split_recorder.HUST_test_files
-        elif self.dataset == 'MATR':
-            self.train_files = split_recorder.MATR_train_files
-            self.val_files = split_recorder.MATR_val_files
-            self.test_files = split_recorder.MATR_test_files
-        elif self.dataset == 'SNL':
-            self.train_files = split_recorder.SNL_train_files
-            self.val_files = split_recorder.SNL_val_files
-            self.test_files = split_recorder.SNL_test_files
-        elif self.dataset == 'MICH':
-            self.train_files = split_recorder.MICH_train_files
-            self.val_files = split_recorder.MICH_val_files
-            self.test_files = split_recorder.MICH_test_files
-        elif self.dataset == 'MICH_EXP':
-            self.train_files = split_recorder.MICH_EXP_train_files
-            self.val_files = split_recorder.MICH_EXP_val_files
-            self.test_files = split_recorder.MICH_EXP_test_files
-        elif self.dataset == 'UL_PUR':
-            self.train_files = split_recorder.UL_PUR_train_files
-            self.val_files = split_recorder.UL_PUR_val_files
-            self.test_files = split_recorder.UL_PUR_test_files
-        elif self.dataset == 'RWTH':
-            self.train_files = split_recorder.RWTH_train_files
-            self.val_files = split_recorder.RWTH_val_files
-            self.test_files = split_recorder.RWTH_test_files
-        elif self.dataset == 'HNEI':
-            self.train_files = split_recorder.HNEI_train_files
-            self.val_files = split_recorder.HNEI_val_files
-            self.test_files = split_recorder.HNEI_test_files
-        elif self.dataset == 'CALCE':
-            self.train_files = split_recorder.CALCE_train_files
-            self.val_files = split_recorder.CALCE_val_files
-            self.test_files = split_recorder.CALCE_test_files
-        elif self.dataset == 'Stanford':
-            self.train_files = split_recorder.Stanford_train_files
-            self.val_files = split_recorder.Stanford_val_files
-            self.test_files = split_recorder.Stanford_test_files
-        elif self.dataset == 'ISU_ILCC':
-            self.train_files = split_recorder.ISU_ILCC_train_files
-            self.val_files = split_recorder.ISU_ILCC_val_files
-            self.test_files = split_recorder.ISU_ILCC_test_files
-        elif self.dataset == 'XJTU':
-            self.train_files = split_recorder.XJTU_train_files
-            self.val_files = split_recorder.XJTU_val_files
-            self.test_files = split_recorder.XJTU_test_files
-        elif self.dataset == 'MIX_large':
-            self.train_files = split_recorder.MIX_large_train_files
-            self.val_files = split_recorder.MIX_large_val_files 
-            self.test_files = split_recorder.MIX_large_test_files
-        elif self.dataset == 'ZN-coin':
-            self.train_files = split_recorder.ZNcoin_train_files
-            self.val_files = split_recorder.ZNcoin_val_files 
-            self.test_files = split_recorder.ZNcoin_test_files  
-        elif self.dataset == 'CALB':
+
+        # Only support CALB, CALB42, CALB2024
+        if self.dataset == 'CALB':
             self.train_files = split_recorder.CALB_train_files
             self.val_files = split_recorder.CALB_val_files 
             self.test_files = split_recorder.CALB_test_files
-        elif self.dataset == 'ZN-coin42':
-            self.train_files = split_recorder.ZN_42_train_files
-            self.val_files = split_recorder.ZN_42_val_files
-            self.test_files = split_recorder.ZN_42_test_files
-        elif self.dataset == 'ZN-coin2024':
-            self.train_files = split_recorder.ZN_2024_train_files
-            self.val_files = split_recorder.ZN_2024_val_files
-            self.test_files = split_recorder.ZN_2024_test_files
         elif self.dataset == 'CALB42':
             self.train_files = split_recorder.CALB_42_train_files
             self.val_files = split_recorder.CALB_42_val_files
@@ -188,42 +100,22 @@ class Dataset_original(Dataset):
             self.train_files = split_recorder.CALB_2024_train_files
             self.val_files = split_recorder.CALB_2024_val_files
             self.test_files = split_recorder.CALB_2024_test_files
-        elif self.dataset == 'NAion':
-            self.train_files = split_recorder.NAion_2021_train_files
-            self.val_files = split_recorder.NAion_2021_val_files
-            self.test_files = split_recorder.NAion_2021_test_files
-        elif self.dataset == 'NAion42':
-            self.train_files = split_recorder.NAion_42_train_files
-            self.val_files = split_recorder.NAion_42_val_files
-            self.test_files = split_recorder.NAion_42_test_files
-        elif self.dataset == 'NAion2024':
-            self.train_files = split_recorder.NAion_2024_train_files
-            self.val_files = split_recorder.NAion_2024_val_files
-            self.test_files = split_recorder.NAion_2024_test_files
-        
+        else:
+            raise Exception('Dataset not supported in this loader. Only CALB, CALB42, CALB2024 are allowed.')
+
         if flag == 'train':
             self.files = [i for i in self.train_files]
         elif flag == 'val':
             self.files = [i for i in self.val_files]
         elif flag == 'test':
             self.files = [i for i in self.test_files]
-            if self.dataset == 'ZN-coin42':
-                self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test_ZN42.json'))
-            elif self.dataset == 'ZN-coin2024':
-                self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test_ZN2024.json'))
-            elif self.dataset == 'CALB42':
+            # Only keep CALB-related seen/unseen mappings
+            if self.dataset == 'CALB42':
                 self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test_CALB42.json'))
             elif self.dataset == 'CALB2024':
                 self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test_CALB2024.json'))
-            elif self.dataset == 'NAion':
-                self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test_NA2021.json'))
-            elif self.dataset == 'NAion42':
-                self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test_NA42.json'))
-            elif self.dataset == 'NAion2024':
-                self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test_NA2024.json'))
             else:
                 self.unseen_seen_record = json.load(open(f'{self.root_path}/seen_unseen_labels/cal_for_test.json'))
-            # self.unseen_seen_record = json.load(open(f'{self.root_path}/cal_for_test.json'))
         
         self.total_charge_discharge_curves, self.total_curve_attn_masks, self.total_labels, self.unique_labels, self.class_labels, self.total_dataset_ids, self.total_cj_aug_charge_discharge_curves, self.total_seen_unseen_IDs = self.read_data()
         
@@ -331,10 +223,8 @@ class Dataset_original(Dataset):
         total_seen_unseen_IDs = []
 
         for file_name in tqdm(self.files):
-            if file_name not in split_recorder.MICH_EXP_test_files and file_name not in split_recorder.MICH_EXP_train_files and file_name not in split_recorder.MICH_EXP_val_files:
-                dataset_id = datasetName2ids[file_name.split('_')[0]]
-            else:
-                dataset_id = datasetName2ids['MICH_EXP']
+            # Only CALB-related datasets are supported here
+            dataset_id = datasetName2ids[file_name.split('_')[0]]
 
             charge_discharge_curves, attn_masks, labels, eol, cj_aug_charge_discharge_curves = self.read_samples_from_one_cell(
                 file_name)
@@ -375,56 +265,16 @@ class Dataset_original(Dataset):
         Read the battery data and eol according to the file_name
         The dataset is indicated by the prefix of the file_name
         '''
+        # Keep only CALB variants and fail for others
         prefix = file_name.split('_')[0]
-        if prefix.startswith('MATR'):
-            data =  pickle.load(open(f'{self.root_path}/MATR/{file_name}', 'rb'))
-        elif prefix.startswith('HUST'):
-            data =  pickle.load(open(f'{self.root_path}/HUST/{file_name}', 'rb'))
-        elif prefix.startswith('SNL'):
-            data =  pickle.load(open(f'{self.root_path}/SNL/{file_name}', 'rb'))
-        elif prefix.startswith('CALCE'):
-            data =  pickle.load(open(f'{self.root_path}/CALCE/{file_name}', 'rb'))
-        elif prefix.startswith('HNEI'):
-            data =  pickle.load(open(f'{self.root_path}/HNEI/{file_name}', 'rb'))
-        elif prefix.startswith('MICH'):
-            if not os.path.isdir(f'{self.root_path}/total_MICH/'):
-                self.merge_MICH(f'{self.root_path}/total_MICH/')
-            data =  pickle.load(open(f'{self.root_path}/total_MICH/{file_name}', 'rb'))
-        elif prefix.startswith('OX'):
-            data =  pickle.load(open(f'{self.root_path}/OX/{file_name}', 'rb'))
-        elif prefix.startswith('RWTH'):
-            data =  pickle.load(open(f'{self.root_path}/RWTH/{file_name}', 'rb'))  
-        elif prefix.startswith('UL-PUR'):
-            data =  pickle.load(open(f'{self.root_path}/UL_PUR/{file_name}', 'rb'))  
-        elif prefix.startswith('SMICH'):
-            data =  pickle.load(open(f'{self.root_path}/MICH_EXP/{file_name[1:]}', 'rb')) 
-        elif prefix.startswith('BIT2'):
-            data =  pickle.load(open(f'{self.root_path}/BIT2/{file_name}', 'rb')) 
-        elif prefix.startswith('Tongji'):
-            data =  pickle.load(open(f'{self.root_path}/Tongji/{file_name}', 'rb'))
-        elif prefix.startswith('Stanford'):
-            data =  pickle.load(open(f'{self.root_path}/Stanford/{file_name}', 'rb'))
-        elif prefix.startswith('ISU-ILCC'):
-            data =  pickle.load(open(f'{self.root_path}/ISU_ILCC/{file_name}', 'rb'))
-        elif prefix.startswith('XJTU'):
-            data =  pickle.load(open(f'{self.root_path}/XJTU/{file_name}', 'rb'))
-        elif prefix.startswith('ZN-coin'):
-            data =  pickle.load(open(f'{self.root_path}/ZN-coin/{file_name}', 'rb'))
-        elif prefix.startswith('CALB'):
+        if prefix.startswith('CALB'):
             data =  pickle.load(open(f'{self.root_path}/CALB/{file_name}', 'rb'))
-        elif prefix.startswith('NA-ion'):
-            data =  pickle.load(open(f'{self.root_path}/NA-ion/{file_name}', 'rb'))
-        
-        if prefix == 'MICH':
-            with open(f'{self.root_path}/Life labels/total_MICH_labels.json') as f:
-                life_labels = json.load(f)
-        elif prefix.startswith('Tongji'):
-            file_name = file_name.replace('--', '-#')
-            with open(f'{self.root_path}/Life labels/Tongji_labels.json') as f:
-                life_labels = json.load(f)
         else:
-            with open(f'{self.root_path}/Life labels/{prefix}_labels.json') as f:
-                life_labels = json.load(f)
+            raise Exception('Unsupported dataset prefix. Only CALB variants are supported by this loader.')
+
+        # Life label files: assume prefix-based life label files exist for CALB variants
+        with open(f'{self.root_path}/Life labels/{prefix}_labels.json') as f:
+            life_labels = json.load(f)
         if file_name in life_labels:
             eol = life_labels[file_name]
         else:
@@ -444,12 +294,8 @@ class Dataset_original(Dataset):
             return None, None, None, None, None
         cell_name = file_name.split('.pkl')[0]
         
-        if file_name.startswith('RWTH'):
-            nominal_capacity = 1.85
-        elif file_name.startswith('SNL_18650_NCA_25C_20-80'):
-            nominal_capacity = 3.2
-        else:
-            nominal_capacity = data['nominal_capacity_in_Ah']
+        # Use nominal_capacity in data for CALB variants; remove RWTH/SNL special cases
+        nominal_capacity = data['nominal_capacity_in_Ah']
             
         cycle_data = data['cycle_data'] # list of cycle data dict
             
@@ -547,16 +393,14 @@ class Dataset_original(Dataset):
                 discharge_capacity_records = cycle_df['discharge_capacity_in_Ah'].values
                 time_in_s_records = cycle_df['time_in_s'].values
 
-                cutoff_voltage_indices = np.nonzero(current_records_in_C>=0.01) # This includes constant-voltage charge data, 49th cycle of MATR_b1c18 has some abnormal voltage records
-                charge_end_index = cutoff_voltage_indices[0][-1] # after charge_end_index, there are rest after charge, discharge, and rest after discharge data
+                cutoff_voltage_indices = np.nonzero(current_records_in_C>=0.01)
+                charge_end_index = cutoff_voltage_indices[0][-1]
 
                 cutoff_voltage_indices = np.nonzero(current_records_in_C<=-0.01) 
                 discharge_end_index = cutoff_voltage_indices[0][-1]
                 
-                # tmp_discharge_capacity_records = max(charge_capacity_records) - discharge_capacity_records
-                if prefix in ['RWTH', 'OX', 'ZN-coin', 'CALB_0', 'CALB_35', 'CALB_45']:
-                    # Every cycle first discharge and then charge
-                    #capacity_in_battery = np.where(charge_capacity_records==0, discharge_capacity_records, charge_capacity_records)
+                # For CALB variants: some CALB file variants may have discharge-first cycles
+                if prefix in ['CALB_0', 'CALB_35', 'CALB_45']:
                     discharge_voltages = voltage_records[:discharge_end_index]
                     discharge_capacities = discharge_capacity_records[:discharge_end_index]
                     discharge_currents = current_records[:discharge_end_index]
@@ -573,8 +417,6 @@ class Dataset_original(Dataset):
                     charge_currents = charge_currents[np.abs(charge_current_in_C)>0.01]
                     charge_times = charge_times[np.abs(charge_current_in_C)>0.01]
                 else:
-                    # Every cycle first charge and then discharge
-                    #capacity_in_battery = np.where(np.logical_and(current_records>=-(nominal_capacity*0.01), discharge_capacity_records<=nominal_capacity*0.01), charge_capacity_records, discharge_capacity_records)
                     discharge_voltages = voltage_records[charge_end_index:]
                     discharge_capacities = discharge_capacity_records[charge_end_index:]
                     discharge_currents = current_records[charge_end_index:]
@@ -590,12 +432,6 @@ class Dataset_original(Dataset):
                     charge_capacities = charge_capacity_records[:charge_end_index]
                     charge_currents = current_records[:charge_end_index]
                     charge_times = time_in_s_records[:charge_end_index]
-                
-                # try:
-                #     discharge_voltages, discharge_currents, discharge_capacities = self.resample_charge_discharge_curvesv2(discharge_voltages, discharge_currents, discharge_capacities)
-                #     charge_voltages, charge_currents, charge_capacities = self.resample_charge_discharge_curvesv2(charge_voltages, charge_currents, charge_capacities)
-                # except:
-                #     print('file_name', file_name, cycle)
 
                 discharge_voltages, discharge_currents, discharge_capacities = self.resample_charge_discharge_curves(discharge_voltages, discharge_currents, discharge_capacities)
                 charge_voltages, charge_currents, charge_capacities = self.resample_charge_discharge_curves(charge_voltages, charge_currents, charge_capacities)
@@ -657,15 +493,9 @@ class Dataset_original(Dataset):
         train_labels = []
         for file_name in train_files:
             prefix = file_name.split('_')[0]
-            if prefix == 'MICH':
-                with open(f'{self.root_path}/total_MICH_labels.json') as f:
-                    life_labels = json.load(f)
-            elif prefix.startswith('Tongji'):
-                with open(f'{self.root_path}/Tongji_labels.json') as f:
-                    life_labels = json.load(f)
-            else:
-                with open(f'{self.root_path}/{prefix}_labels.json') as f:
-                    life_labels = json.load(f)
+            # Only CALB-related label loading
+            with open(f'{self.root_path}/Life labels/{prefix}_labels.json') as f:
+                life_labels = json.load(f)
             if file_name in life_labels:
                 eol = life_labels[file_name]
             else:
