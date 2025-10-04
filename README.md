@@ -38,28 +38,81 @@ The project consists of two main components:
 ## Project Structure
 
 ```
-TATA-Hackathon/
-├── frontend/                 # Next.js Frontend Application
-│   ├── app/                 # Next.js App Router
-│   │   ├── dashboard/       # Dashboard pages
-│   │   │   ├── analytics/   # Analytics dashboard
-│   │   │   ├── predictions/ # ML predictions interface
-│   │   │   └── reports/     # Report generation
-│   │   └── page.tsx         # Main landing page
-│   ├── components/          # React components
-│   │   └── dashboard/       # Dashboard-specific components
-│   ├── lib/                 # Utility libraries
-│   │   ├── api.ts          # API client
-│   │   ├── constants.ts    # App constants
-│   │   └── types.ts        # TypeScript definitions
-│   └── types/              # Global type definitions
-├── backend/                 # Python Backend
-│   └── HFDataPreProcess/    # Battery analytics API
-│       ├── battery_analytics_api.py      # Main Flask API
-│       ├── battery_analytics_client.py   # API client
-│       ├── test_api.py                   # API testing
-│       └── README_API.md                 # API documentation
-└── README.md               # This file
+TATA-Hackathon-main/
+├── backend/                         # Python backend, data processing and model utils
+│   ├── HFDataPreProcess/            # Battery analytics API + preprocessing utilities
+│   │   ├── analyze_calb_data.py
+│   │   ├── battery_analytics_api.py
+│   │   ├── battery_analytics_client.py
+│   │   ├── convert_calb_data.py
+│   │   ├── explore_calb_data.py
+│   │   ├── README_API.md
+│   │   ├── test_api.py
+│   │   ├── test_battery_api.py
+│   │   └── battery_data_export/     # exported sample data and test inputs
+│   └── (other backend utilities)
+├── models/                          # Model code, training scripts, checkpoints and datasets
+│   ├── assets/                      # Documentation about data structure and training
+│   │   ├── Data_structure_description.md
+│   │   └── Model_training.md
+│   ├── checkpoints/                 # Saved model checkpoints
+│   │   ├── CALB_CPTransformer/
+│   │   └── CALB_CPTransformer_regularized/
+│   ├── data_provider/               # Data loader / factory utilities
+│   │   ├── data_factory.py
+│   │   ├── data_loader.py
+│   │   ├── data_split_recorder.py
+│   │   └── life_classes.json
+│   ├── dataset/                     # Datasets used for training / evaluation
+│   │   ├── CALB/
+│   │   ├── "Life Labels"/
+│   │   └── seen_unseen_labels/
+│   ├── layers/                      # Model layer implementations
+│   │   ├── AutoCorrelation.py
+│   │   ├── Autoformer_EncDec.py
+│   │   ├── Conv_Blocks.py
+│   │   ├── Embed.py
+│   │   ├── fusion.py
+│   │   ├── SelfAttention_Family.py
+│   │   └── StandardNorm.py
+│   ├── models/                      # Model definitions
+│   │   ├── CPBiGRU.py
+│   │   ├── CPBiLSTM.py
+│   │   ├── CPLSTM.py
+│   │   ├── CPMLP.py
+│   │   └── CPTransformer.py
+│   ├── plot_scripts/                # Plotting utilities for analysis
+│   │   └── plt_CALB.py
+│   ├── process_scripts/             # Data preprocessing scripts
+│   │   └── preprocess_CALB.py
+│   ├── read_structure/              # Helpers to read data structure definitions
+│   │   └── read_data_structure.py
+│   ├── RUL/                         # Remaining Useful Life analysis tools
+│   │   ├── predict_rul_simple.py
+│   │   └── test_rul_system.py
+│   ├── train_eval_scripts/          # Shell scripts to train/evaluate models
+│   │   ├── CALB_CPTransformer.sh
+│   │   └── evaluate.sh
+│   └── utils/                       # Misc utilities (losses, metrics, masking)
+│       ├── augmentation.py
+│       ├── data_split_helper.py
+│       ├── losses.py
+│       ├── metrics.py
+│       └── timefeatures.py
+├── frontend/                        # Next.js TypeScript frontend application
+│   ├── app/
+│   │   ├── dashboard/
+│   │   └── page.tsx
+│   ├── components/
+│   ├── lib/
+│   │   ├── api.ts
+│   │   ├── constants.ts
+│   │   └── utils.ts
+│   ├── public/
+│   ├── hooks/
+│   └── types/
+├── README.md                        # Project README (this file)
+└── package.json (frontend)          # Frontend package manifest
 ```
 
 ## Getting Started
