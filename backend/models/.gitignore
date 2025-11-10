@@ -14,3 +14,5 @@ visualization/
 RUL/rul_predictions_*.csv
 RUL/rul_analysis_summary_*.json
 RUL/prediction_plots_*/
+
+venv/
