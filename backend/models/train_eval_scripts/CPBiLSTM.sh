@@ -1,5 +1,6 @@
 model_name=CPBiLSTM
-dataset=MIX_large
+# dataset=MIX_large
+dataset=CALB
 train_epochs=100
 early_cycle_threshold=100
 learning_rate=0.001
@@ -23,7 +24,7 @@ n_heads=8
 
 
 
-checkpoints=/path/to/your/saving/folder # the save path of checkpoints
+checkpoints=backend/models/checkpoints # the save path of checkpoints
 data=Dataset_original
 root_path=./dataset
 comment='CPBiLSTM' 

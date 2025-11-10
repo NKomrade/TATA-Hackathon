@@ -1,5 +1,6 @@
 model_name=CPMLP
-dataset=MIX_large
+# dataset=MIX_large
+dataset=CALB
 train_epochs=100
 early_cycle_threshold=100
 learning_rate=0.00005
@@ -22,7 +23,7 @@ lradj=constant
 n_heads=8
 
 
-checkpoints=/path/to/your/saving/folder # the save path of checkpoints
+checkpoints=backend/models/checkpoints # the save path of checkpoints
 data=Dataset_original
 root_path=./dataset
 comment='CPMLP' 
