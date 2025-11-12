@@ -1,0 +1,24 @@
+run_time: 2025-11-10 23:24:56
+setting: CPLSTM_sl1_lr5e-05_dm256_nh8_el3_dl2_df128_lradjconstant_datasetCALB_lossMSE_wd0.0_wlFalse_bs16_s2021
+checkpoints_path: backend/models/checkpoints/CPLSTM_sl1_lr5e-05_dm256_nh8_el3_dl2_df128_lradjconstant_datasetCALB_lossMSE_wd0.0_wlFalse_bs16_s2021-CPLSTM
+model: CPLSTM
+dataset: CALB
+train_epochs: 100
+batch_size: 16
+learning_rate: 5e-05
+d_model: 256
+e_layers: 3
+d_layers: 2
+
+# Best validation/test metrics
+best_vali_loss: 0.21709854727238678
+best_vali_MAE: 174.30192510986328
+best_test_MAE: 106.88754754638671
+best_vali_RMSE: 277.37424840043144
+best_test_RMSE: 184.29457006302303
+best_vali_MAPE: 0.21709854727238678
+best_test_MAPE: 0.22279062713209982
+best_vali_alpha_acc1: 58.599999999999994
+best_vali_alpha_acc2: 55.800000000000004
+best_test_alpha_acc1: 58.8
+best_test_alpha_acc2: 57.99999999999999

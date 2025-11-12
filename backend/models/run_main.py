@@ -390,6 +390,37 @@ accelerator.print(f'Best model performance: Test Seen MAPE: {best_seen_test_MAPE
 accelerator.print(f'Best model performance: Test Seen 15%-accuracy: {best_seen_test_alpha_acc1:.4f} | Test Unseen 15%-accuracy: {best_unseen_test_alpha_acc1:.4f}')
 accelerator.print(f'Best model performance: Test Seen 10%-accuracy: {best_seen_test_alpha_acc2:.4f} | Test Unseen 10%-accuracy: {best_unseen_test_alpha_acc2:.4f}')
 accelerator.print(path)
+# Save a concise run summary to the checkpoint folder (main process only)
+try:
+    if accelerator.is_local_main_process:
+        summary_path = os.path.join(path, 'run_summary.txt')
+        with open(summary_path, 'w') as sf:
+            sf.write(f"run_time: {nowtime}\n")
+            sf.write(f"setting: {setting}\n")
+            sf.write(f"checkpoints_path: {path}\n")
+            sf.write(f"model: {args.model}\n")
+            sf.write(f"dataset: {args.dataset}\n")
+            sf.write(f"train_epochs: {args.train_epochs}\n")
+            sf.write(f"batch_size: {args.batch_size}\n")
+            sf.write(f"learning_rate: {args.learning_rate}\n")
+            sf.write(f"d_model: {args.d_model}\n")
+            sf.write(f"e_layers: {args.e_layers}\n")
+            sf.write(f"d_layers: {args.d_layers}\n")
+            sf.write("\n# Best validation/test metrics\n")
+            sf.write(f"best_vali_loss: {best_vali_loss}\n")
+            sf.write(f"best_vali_MAE: {best_vali_MAE}\n")
+            sf.write(f"best_test_MAE: {best_test_MAE}\n")
+            sf.write(f"best_vali_RMSE: {best_vali_RMSE}\n")
+            sf.write(f"best_test_RMSE: {best_test_RMSE}\n")
+            sf.write(f"best_vali_MAPE: {best_vali_MAPE}\n")
+            sf.write(f"best_test_MAPE: {best_test_MAPE}\n")
+            sf.write(f"best_vali_alpha_acc1: {best_vali_alpha_acc1}\n")
+            sf.write(f"best_vali_alpha_acc2: {best_vali_alpha_acc2}\n")
+            sf.write(f"best_test_alpha_acc1: {best_test_alpha_acc1}\n")
+            sf.write(f"best_test_alpha_acc2: {best_test_alpha_acc2}\n")
+except Exception:
+    # don't let summary saving crash the run; it's optional
+    pass
 accelerator.set_trigger()
 if accelerator.check_trigger() and accelerator.is_local_main_process:
     wandb.log({"epoch": epoch+1, "train_loss": train_loss, "vali_RMSE": best_vali_RMSE, "vali_MAPE": best_vali_MAPE, "vali_acc1": best_vali_alpha_acc1, "vali_acc2": best_vali_alpha_acc2, 

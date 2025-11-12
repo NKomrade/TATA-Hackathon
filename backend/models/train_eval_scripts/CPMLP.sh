@@ -18,7 +18,7 @@ seed=2021
 seq_len=1
 d_layers=2
 charge_discharge_length=300
-patience=5 # Eearly stopping patience
+patience=5 # Early stopping patience
 lradj=constant
 n_heads=8
 
